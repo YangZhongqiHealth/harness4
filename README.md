@@ -15,9 +15,11 @@ affiliated with Anthropic.
 
 ## Install from this repository
 
-Python 3.11+ and Git are required. From the downloaded/cloned repository:
+Python 3.11+ and Git are required:
 
 ```sh
+git clone https://github.com/YangZhongqiHealth/harness4.git
+cd harness4
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install .

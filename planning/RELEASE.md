@@ -12,11 +12,14 @@ narrow PR review slice does not mark unrelated runtime issues complete.
 - Trusted observe policy, protected paths, change-size limit, explicit CI evidence.
 - MIT, contribution/security docs, Python CI and a safe offline Actions example.
 
-## Before publishing
+## Publication completed — 2026-11-24
 
-- Run tests and build/install smoke test; inspect distribution and secret scan.
-- Initialize local Git and publish to the user's confirmed GitHub identity.
-- Verify remote files and CI. An alpha repository publication is not a PyPI release.
+- Public repository: https://github.com/YangZhongqiHealth/harness4
+- MIT license, source and documentation verified remotely.
+- 83 tests passed locally; wheel installation and end-to-end CLI smoke passed.
+- GitHub CI passed tests and builds on Python 3.11–3.13 for `6bbb60d`.
+- Commit author uses the GitHub noreply address.
+- This is an alpha repository publication; no PyPI package has been released.
 
 ## Next product milestones
 

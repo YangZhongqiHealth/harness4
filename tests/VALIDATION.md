@@ -13,7 +13,8 @@
 - Scanned distributable source for common secret formats and local user paths:
   no matches. This pattern scan is not a guarantee that arbitrary secrets are absent.
 
-GitHub CI is configured for Python 3.11–3.13 and package build; remote results are
-recorded after publication. No real model endpoint, benchmark quality, automatic
+GitHub CI passed all Python 3.11, 3.12 and 3.13 jobs (tests, installed CLI smoke
+and package build) for implementation commit `6bbb60d`.
+Run: https://github.com/YangZhongqiHealth/harness4/actions/runs/45542186257. No real model endpoint, benchmark quality, automatic
 repair, durable runtime, authorization enforcement or trusted approval gate was
 validated. Reports are observe-only and CI evidence is operator supplied.

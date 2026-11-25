@@ -25,3 +25,7 @@ own authorization, freshness checks, isolation and negative tests.
 AGENTS.md was absent from the bootstrap. No independent human contract review is
 recorded. Original TaskService.submit still duplicates request_key; future admission
 must reject disagreement. Original canonical schema fixtures remain unchanged.
+
+Public repository: https://github.com/YangZhongqiHealth/harness4
+Implementation commit `6bbb60d` passed GitHub CI on Python 3.11–3.13.
+The local main branch tracks origin/main. No PyPI release has been made.
