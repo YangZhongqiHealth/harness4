@@ -1,0 +1,286 @@
+[
+  {
+    "id": "H4-001",
+    "title": "[H4-001] Ratify shared contracts and ADR",
+    "milestone": "M0",
+    "depends_on": [],
+    "spec": "docs/specs/00-contracts.md",
+    "body": "## Objective\nReview starter types against RFC; freeze P0 task/result/event/patch and error schemas; generate JSON Schema fixtures.\n\n## Dependencies\nNone\n\n## Scope\ncontracts, ports, schema fixtures\n\n## Specification\n`docs/specs/00-contracts.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nRound-trip valid records; reject internal authority fields, stale transitions, incompatible versions; import-boundary test.\n\n## Prohibited shortcuts\nDo not silently widen permissions or mark incomplete interfaces implemented.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-002",
+    "title": "[H4-002] Implement fake and OpenAI-compatible providers",
+    "milestone": "M0",
+    "depends_on": [
+      "H4-001"
+    ],
+    "spec": "docs/specs/01-product-and-provider.md",
+    "body": "## Objective\nFake scripted responses; direct compatible adapter; normalized usage and errors; capability probes.\n\n## Dependencies\nH4-001\n\n## Scope\nproviders, config\n\n## Specification\n`docs/specs/01-product-and-provider.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nNative tool roundtrip, text-only fallback, malformed streaming fragments, rate-limit and unknown usage fixtures.\n\n## Prohibited shortcuts\nNo implicit endpoint fallback or secret logging.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-003",
+    "title": "[H4-003] Implement SQLite and artifact repositories",
+    "milestone": "M0",
+    "depends_on": [
+      "H4-001"
+    ],
+    "spec": "docs/specs/02-runtime-and-state.md",
+    "body": "## Objective\nMigrations; transaction-scoped task/step/event/operation stores; scoped queries; artifact digests.\n\n## Dependencies\nH4-001\n\n## Scope\nstate, storage\n\n## Specification\n`docs/specs/02-runtime-and-state.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nDuplicate key conflict; state/event atomicity; restart persistence; orphan cleanup.\n\n## Prohibited shortcuts\nNo network inside transaction or unscoped resource lookup.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-004",
+    "title": "[H4-004] Implement admission and policy pinning",
+    "milestone": "M0",
+    "depends_on": [
+      "H4-001",
+      "H4-003"
+    ],
+    "spec": "docs/specs/00-contracts.md",
+    "body": "## Objective\nDefault agent; request key fingerprint; trusted effective policy and grant resolution.\n\n## Dependencies\nH4-001, H4-003\n\n## Scope\napplication, policy, kernel\n\n## Specification\n`docs/specs/00-contracts.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nSame request returns same ID; different payload conflicts; new policy does not change old task.\n\n## Prohibited shortcuts\nClient cannot set active policy or grant itself access.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-005",
+    "title": "[H4-005] Implement local tool boundary",
+    "milestone": "M0",
+    "depends_on": [
+      "H4-001",
+      "H4-003"
+    ],
+    "spec": "docs/specs/04-tools-and-environment.md",
+    "body": "## Objective\nRead mounted files and create private artifacts with explicit grants and stable intent IDs.\n\n## Dependencies\nH4-001, H4-003\n\n## Scope\ntools, security, environment\n\n## Specification\n`docs/specs/04-tools-and-environment.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nTraversal, symlink, oversized file and revoked-grant negatives; idempotent local receipt.\n\n## Prohibited shortcuts\nNo unrestricted shell, network or broad host filesystem access.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-006",
+    "title": "[H4-006] Implement context compiler and manifest",
+    "milestone": "M0",
+    "depends_on": [
+      "H4-001",
+      "H4-002",
+      "H4-004"
+    ],
+    "spec": "docs/specs/03-context-memory-skills.md",
+    "body": "## Objective\nRequired context and tool schema assembly; token budget; source IDs and omissions.\n\n## Dependencies\nH4-001, H4-002, H4-004\n\n## Scope\nexecution, context\n\n## Specification\n`docs/specs/03-context-memory-skills.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nRequired content never silently truncated; paired tool results retained; manifest pinned.\n\n## Prohibited shortcuts\nDo not store hidden reasoning or unauthorized content.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-007",
+    "title": "[H4-007] Implement bounded actor and reducer",
+    "milestone": "M0",
+    "depends_on": [
+      "H4-002",
+      "H4-003",
+      "H4-004",
+      "H4-005",
+      "H4-006"
+    ],
+    "spec": "docs/specs/02-runtime-and-state.md",
+    "body": "## Objective\nDeterministic next-command reducer; model/tool reservations; persist results; complete/fail/cancel.\n\n## Dependencies\nH4-002, H4-003, H4-004, H4-005, H4-006\n\n## Scope\nkernel, execution\n\n## Specification\n`docs/specs/02-runtime-and-state.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nFake full task; bounded turns; crash after receipt consumes result; malformed actions rejected.\n\n## Prohibited shortcuts\nModel cannot directly execute effects; no infinite loop.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-008",
+    "title": "[H4-008] Implement init, doctor, chat, run and inspect",
+    "milestone": "M0",
+    "depends_on": [
+      "H4-002",
+      "H4-004",
+      "H4-007"
+    ],
+    "spec": "docs/specs/01-product-and-provider.md",
+    "body": "## Objective\nSingle service layer; API-key reference; stream output; TaskResult and --json.\n\n## Dependencies\nH4-002, H4-004, H4-007\n\n## Scope\napplication, cli\n\n## Specification\n`docs/specs/01-product-and-provider.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nCredential-free quickstart; opt-in live probe; persisted inspect; text-only chat; no key in logs.\n\n## Prohibited shortcuts\nDo not pretend daemon/background tasks continue when process exits.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-009",
+    "title": "[H4-009] M0 integration and threat smoke suite",
+    "milestone": "M0",
+    "depends_on": [
+      "H4-005",
+      "H4-007",
+      "H4-008"
+    ],
+    "spec": "docs/specs/07-integration-and-benchmarks.md",
+    "body": "## Objective\nClean install, default assistant, safe artifact, one-endpoint opt-in live smoke.\n\n## Dependencies\nH4-005, H4-007, H4-008\n\n## Scope\ntests, packaging\n\n## Specification\n`docs/specs/07-integration-and-benchmarks.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nRestart, refusal, cancellation, budget limit, credential canary and invalid action tested.\n\n## Prohibited shortcuts\nNo live charges in default CI.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-010",
+    "title": "[H4-010] Capture feedback and evidence projections",
+    "milestone": "M1",
+    "depends_on": [
+      "H4-003",
+      "H4-007",
+      "H4-008"
+    ],
+    "spec": "docs/specs/05-evidence-and-learning.md",
+    "body": "## Objective\nBind correction/outcome to task/artifact/policy; redacted episode and consent.\n\n## Dependencies\nH4-003, H4-007, H4-008\n\n## Scope\nfeedback, evidence\n\n## Specification\n`docs/specs/05-evidence-and-learning.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nDuplicate feedback idempotent; stale artifact rejected; unverified outcome not objective label.\n\n## Prohibited shortcuts\nNever fabricate labels from reflection.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-011",
+    "title": "[H4-011] Implement dataset manifests and normalization fixture",
+    "milestone": "M1",
+    "depends_on": [
+      "H4-010"
+    ],
+    "spec": "docs/specs/06-evaluation-and-release.md",
+    "body": "## Objective\nGrouped train/dev/target/anchor fixtures; deterministic expected values; sealed split boundary.\n\n## Dependencies\nH4-010\n\n## Scope\nevaluation, recipes\n\n## Specification\n`docs/specs/06-evaluation-and-release.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nDisjoint groups; zero/null/empty-string anchors; expected answers not in actor context.\n\n## Prohibited shortcuts\nFake model behavior labeled scripted, not proof of real improvement.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-012",
+    "title": "[H4-012] Implement immutable candidates and text patches",
+    "milestone": "M1",
+    "depends_on": [
+      "H4-004",
+      "H4-010"
+    ],
+    "spec": "docs/specs/05-evidence-and-learning.md",
+    "body": "## Objective\nValidate section allowlist, scope, base/component hash; immutable archive and evidence references.\n\n## Dependencies\nH4-004, H4-010\n\n## Scope\npolicy, learning\n\n## Specification\n`docs/specs/05-evidence-and-learning.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nReject stale/no-op/forbidden patch; preserve unrelated section; candidate not visible before activation.\n\n## Prohibited shortcuts\nNo arbitrary code generation or evaluation/security mutation.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-013",
+    "title": "[H4-013] Implement paired dev and sealed evaluation",
+    "milestone": "M1",
+    "depends_on": [
+      "H4-007",
+      "H4-011",
+      "H4-012"
+    ],
+    "spec": "docs/specs/06-evaluation-and-release.md",
+    "body": "## Objective\nClone per rollout; same model/grants/budgets; trusted protocol and per-case results.\n\n## Dependencies\nH4-007, H4-011, H4-012\n\n## Scope\nevaluation\n\n## Specification\n`docs/specs/06-evaluation-and-release.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nMissing/duplicate cases, anchor regressions, split leakage and hard violations block eligibility.\n\n## Prohibited shortcuts\nNever let optimizer read sealed labels or retry until pass.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-014",
+    "title": "[H4-014] Implement reflection optimizer and cycle coordinator",
+    "milestone": "M1",
+    "depends_on": [
+      "H4-010",
+      "H4-011",
+      "H4-012",
+      "H4-013"
+    ],
+    "spec": "docs/specs/05-evidence-and-learning.md",
+    "body": "## Objective\nStructured hypothesis and bounded patches; dev-only selection; one sealed submission; separate budget.\n\n## Dependencies\nH4-010, H4-011, H4-012, H4-013\n\n## Scope\nlearning\n\n## Specification\n`docs/specs/05-evidence-and-learning.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nInsufficient evidence abstains; malformed patches rejected; budget exhaustion no promotion.\n\n## Prohibited shortcuts\nNo release activation access or live side effects.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-015",
+    "title": "[H4-015] Implement approval, CAS promotion and rollback",
+    "milestone": "M1",
+    "depends_on": [
+      "H4-003",
+      "H4-012",
+      "H4-013"
+    ],
+    "spec": "docs/specs/06-evaluation-and-release.md",
+    "body": "## Objective\nVerify trusted report and approval bindings; atomic pointer/audit event; scope and compatibility check.\n\n## Dependencies\nH4-003, H4-012, H4-013\n\n## Scope\nrelease, policy\n\n## Specification\n`docs/specs/06-evaluation-and-release.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nStale/expired/replayed approval rejected; fake report never production; new task pins new version; rollback restart.\n\n## Prohibited shortcuts\nApproval cannot bypass hard gate; rollback does not undo external effects.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-016",
+    "title": "[H4-016] Ship deterministic and live learning demos",
+    "milestone": "M1",
+    "depends_on": [
+      "H4-009",
+      "H4-014",
+      "H4-015"
+    ],
+    "spec": "docs/specs/07-integration-and-benchmarks.md",
+    "body": "## Objective\nFake lifecycle and opt-in paid live mode; reports, diff, user approval, new task and rollback.\n\n## Dependencies\nH4-009, H4-014, H4-015\n\n## Scope\ncli, recipes, tests\n\n## Specification\n`docs/specs/07-integration-and-benchmarks.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nFake unseen fixture gain + harmful candidate rejection + no feedback abstention; live reports failures honestly.\n\n## Prohibited shortcuts\nDo not claim SOTA or live learning gain from fake adapter.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-017",
+    "title": "[H4-017] Implement durable inbox, scheduler and wait/resume",
+    "milestone": "M2",
+    "depends_on": [
+      "H4-007",
+      "H4-016"
+    ],
+    "spec": "docs/specs/02-runtime-and-state.md",
+    "body": "## Objective\nSigned ingress, dedup, leases, matching predicates, timers, root causality and task locks.\n\n## Dependencies\nH4-007, H4-016\n\n## Scope\nruntime, state\n\n## Specification\n`docs/specs/02-runtime-and-state.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nWake-before-wait, duplicate delivery, expired worker, restart, idle inference zero.\n\n## Prohibited shortcuts\nNo blind re-execution of uncertain writes.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-018",
+    "title": "[H4-018] Implement HTTP and reconnectable events",
+    "milestone": "M2",
+    "depends_on": [
+      "H4-008",
+      "H4-017"
+    ],
+    "spec": "docs/specs/01-product-and-provider.md",
+    "body": "## Objective\nAuthenticated loopback API; submit/status/cancel/feedback/events; cursor reconnect.\n\n## Dependencies\nH4-008, H4-017\n\n## Scope\nserver, application\n\n## Specification\n`docs/specs/01-product-and-provider.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nScope checks, request idempotency, replay gap and unauthorized access tests.\n\n## Prohibited shortcuts\nNo unauthenticated remote bind.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-019",
+    "title": "[H4-019] Implement operation reconciliation and approval broker",
+    "milestone": "M2",
+    "depends_on": [
+      "H4-005",
+      "H4-017"
+    ],
+    "spec": "docs/specs/04-tools-and-environment.md",
+    "body": "## Objective\nTyped approval binding, operation ledger, fenced dispatch, unknown-effect state.\n\n## Dependencies\nH4-005, H4-017\n\n## Scope\ntools, kernel, security\n\n## Specification\n`docs/specs/04-tools-and-environment.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nCrash at each boundary, one-use approval, external version conflict, ambiguous effect reporting.\n\n## Prohibited shortcuts\nNo exactly-once claim for unsupported remote APIs.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-020",
+    "title": "[H4-020] Fault injection, isolation and budget suite",
+    "milestone": "M2",
+    "depends_on": [
+      "H4-017",
+      "H4-018",
+      "H4-019"
+    ],
+    "spec": "docs/specs/02-runtime-and-state.md",
+    "body": "## Objective\nHierarchical reservations, process boundaries, causal loop caps, recovery tests.\n\n## Dependencies\nH4-017, H4-018, H4-019\n\n## Scope\ntests, security\n\n## Specification\n`docs/specs/02-runtime-and-state.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nConcurrent reservation limits, compromised worker attempts, stale lease, cancellation, secret canaries.\n\n## Prohibited shortcuts\nNo unrestricted code execution or learner credentials.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-021",
+    "title": "[H4-021] GitHub read-only review recipe",
+    "milestone": "M3",
+    "depends_on": [
+      "H4-020"
+    ],
+    "spec": "docs/specs/04-tools-and-environment.md",
+    "body": "## Objective\nSigned event or fixture, immutable head snapshot, structured verified findings and feedback.\n\n## Dependencies\nH4-020\n\n## Scope\nrecipes, adapters\n\n## Specification\n`docs/specs/04-tools-and-environment.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nStale SHA detected, no duplicate event, read-only scope, seeded bugs scored.\n\n## Prohibited shortcuts\nNo automated merge or comment writes by default.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-022",
+    "title": "[H4-022] Second domain and plugin conformance",
+    "milestone": "M3",
+    "depends_on": [
+      "H4-016",
+      "H4-020"
+    ],
+    "spec": "docs/specs/07-integration-and-benchmarks.md",
+    "body": "## Objective\nDocument action-item extraction with deterministic fields and user correction; plugin interface.\n\n## Dependencies\nH4-016, H4-020\n\n## Scope\nrecipes, plugins\n\n## Specification\n`docs/specs/07-integration-and-benchmarks.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nSame runtime and learning contracts with different evaluator; setup guide.\n\n## Prohibited shortcuts\nDo not fork core agent loop per domain.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-023",
+    "title": "[H4-023] Integrate optional GEPA optimizer",
+    "milestone": "M4",
+    "depends_on": [
+      "H4-014",
+      "H4-016"
+    ],
+    "spec": "docs/specs/05-evidence-and-learning.md",
+    "body": "## Objective\nLicense/revision audit; adapter to typed patches and dev-only scoring; fallback.\n\n## Dependencies\nH4-014, H4-016\n\n## Scope\nlearning, adapters\n\n## Specification\n`docs/specs/05-evidence-and-learning.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nSame evaluation budget; no sealed access; archive and reproducible results.\n\n## Prohibited shortcuts\nNo dependence on a separate paid model.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-024",
+    "title": "[H4-024] Scoped interventions and learning ROI research",
+    "milestone": "M4",
+    "depends_on": [
+      "H4-016",
+      "H4-022",
+      "H4-023"
+    ],
+    "spec": "docs/specs/03-context-memory-skills.md",
+    "body": "## Objective\nComponent attribution hypotheses, scope overlays, retention anchors, value-based scheduler.\n\n## Dependencies\nH4-016, H4-022, H4-023\n\n## Scope\ncontext, memory, learning\n\n## Specification\n`docs/specs/03-context-memory-skills.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nMatched-budget ablation; negative transfer tests; unsupported case abstains.\n\n## Prohibited shortcuts\nCorrelation does not establish causal credit; no automatic paid learning.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  },
+  {
+    "id": "H4-025",
+    "title": "[H4-025] Reproducible benchmark and release report",
+    "milestone": "M4",
+    "depends_on": [
+      "H4-021",
+      "H4-022",
+      "H4-023",
+      "H4-024"
+    ],
+    "spec": "docs/specs/07-integration-and-benchmarks.md",
+    "body": "## Objective\nCompare B0\u2013B5; grouped split, cost accounting, uncertainty and negative results.\n\n## Dependencies\nH4-021, H4-022, H4-023, H4-024\n\n## Scope\nbenchmarks, docs\n\n## Specification\n`docs/specs/07-integration-and-benchmarks.md` and `docs/DESIGN.md`.\n\n## Acceptance tests\nPinned model/config, reproducible fixtures, matched constraints, transparent failures.\n\n## Prohibited shortcuts\nNo SOTA marketing without empirical superiority for defined conditions.\n\n## Definition of done\nImplement the scoped behavior, add automated tests, document actual user-visible behavior/errors, run relevant CI, and note unsupported features. No unrelated public-contract changes without reviewed ADR."
+  }
+]

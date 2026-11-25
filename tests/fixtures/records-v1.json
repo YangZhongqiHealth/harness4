@@ -1,0 +1,233 @@
+{
+  "Scope": {
+    "schema_version": 1,
+    "workspace_id": "w",
+    "agent_id": "a",
+    "family": "f"
+  },
+  "Section": {
+    "schema_version": 1,
+    "name": "instructions",
+    "text": "Help with the task."
+  },
+  "PolicyBundle": {
+    "schema_version": 1,
+    "scope": {
+      "schema_version": 1,
+      "workspace_id": "w",
+      "agent_id": "a",
+      "family": "f"
+    },
+    "sections": [
+      {
+        "schema_version": 1,
+        "name": "instructions",
+        "text": "Help with the task."
+      }
+    ],
+    "model_profile": "fake@1"
+  },
+  "TaskSnapshot": {
+    "schema_version": 1,
+    "workspace_id": "w",
+    "task_id": "t",
+    "policy_hash": "sha256:25f14dbefa907158a9507c8e8debc065f5c895b0b6e828827955f856e29503b6",
+    "status": "queued",
+    "state_version": 0
+  },
+  "ModelRef": {
+    "schema_version": 1,
+    "provider": "fake",
+    "name": "scripted"
+  },
+  "TaskSpec": {
+    "schema_version": 1,
+    "agent_id": "a",
+    "session_id": null,
+    "goal": "Help",
+    "inputs": [],
+    "resources": [],
+    "requested_capabilities": [],
+    "outcome_spec_ref": null,
+    "output_schema_ref": null,
+    "request_key": "k"
+  },
+  "CandidatePatch": {
+    "schema_version": 1,
+    "base_policy_hash": "sha256:25f14dbefa907158a9507c8e8debc065f5c895b0b6e828827955f856e29503b6",
+    "scope": {
+      "schema_version": 1,
+      "workspace_id": "w",
+      "agent_id": "a",
+      "family": "f"
+    },
+    "surface": "instructions",
+    "op": "replace_section",
+    "target": "instructions",
+    "expected_component_hash": "sha256:e5e5c8f675ac47284fbf5a95494a91f93f66c079bb43079e26770968583c5651",
+    "value": "Be precise.",
+    "evidence_refs": [
+      "e"
+    ],
+    "hypothesis": "Improve precision",
+    "optimizer_ref": "fake@1"
+  },
+  "PairedCase": {
+    "schema_version": 1,
+    "case_id": "1",
+    "split": "target",
+    "baseline_pass": false,
+    "candidate_pass": true
+  },
+  "DemoScorecard": {
+    "schema_version": 1,
+    "evidence_class": "scripted_demo",
+    "incumbent_hash": "old",
+    "candidate_hash": "new",
+    "expected_case_ids": [
+      "1"
+    ],
+    "cases": [],
+    "hard_violations": [],
+    "budget_met": true
+  },
+  "DomainError": {
+    "schema_version": 1,
+    "code": "CONFLICT",
+    "message": "Stale version",
+    "retryable": false,
+    "correlation_id": "c"
+  },
+  "Principal": {
+    "schema_version": 1,
+    "workspace_id": "w",
+    "subject_id": "u"
+  },
+  "UsageSummary": {
+    "schema_version": 1,
+    "input_tokens": null,
+    "output_tokens": null,
+    "cost_microcurrency": null,
+    "estimated": false
+  },
+  "ArtifactRef": {
+    "schema_version": 1,
+    "artifact_id": "a",
+    "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mime_type": "text/plain",
+    "size_bytes": 0,
+    "retrieval_ref": "artifact:a",
+    "provenance_refs": [],
+    "retention_ref": "private"
+  },
+  "ActionReceipt": {
+    "schema_version": 1,
+    "operation_id": "o",
+    "status": "unknown_effect",
+    "summary": "Reconcile required",
+    "artifact_refs": []
+  },
+  "VerificationReport": {
+    "schema_version": 1,
+    "status": "not_evaluated",
+    "evidence_refs": []
+  },
+  "PendingRequest": {
+    "schema_version": 1,
+    "request_id": "r",
+    "kind": "input",
+    "message": "Clarify"
+  },
+  "TaskResult": {
+    "schema_version": 1,
+    "task_id": "t",
+    "session_id": null,
+    "status": "succeeded",
+    "message": null,
+    "artifacts": [],
+    "action_receipts": [],
+    "verification": {
+      "schema_version": 1,
+      "status": "not_evaluated",
+      "evidence_refs": []
+    },
+    "pending": [],
+    "usage": {
+      "schema_version": 1,
+      "input_tokens": null,
+      "output_tokens": null,
+      "cost_microcurrency": null,
+      "estimated": false
+    },
+    "policy_hash": "sha256:25f14dbefa907158a9507c8e8debc065f5c895b0b6e828827955f856e29503b6",
+    "model_ref": {
+      "schema_version": 1,
+      "provider": "fake",
+      "name": "scripted"
+    },
+    "trace_id": "tr"
+  },
+  "Event": {
+    "schema_version": 1,
+    "workspace_id": "w",
+    "task_id": "t",
+    "event_id": "e",
+    "seq": 1,
+    "type": "task.started",
+    "timestamp": "2026-11-24T00:00:00.000000Z",
+    "message": null,
+    "payload_refs": []
+  },
+  "AdmissionReceipt": {
+    "schema_version": 1,
+    "task_id": "t",
+    "status": "queued",
+    "stream_cursor": 0
+  },
+  "TaskView": {
+    "schema_version": 1,
+    "snapshot": {
+      "schema_version": 1,
+      "workspace_id": "w",
+      "task_id": "t",
+      "policy_hash": "sha256:25f14dbefa907158a9507c8e8debc065f5c895b0b6e828827955f856e29503b6",
+      "status": "queued",
+      "state_version": 0
+    },
+    "result": null
+  },
+  "Lease": {
+    "schema_version": 1,
+    "workspace_id": "w",
+    "task_id": "t",
+    "run_id": "r",
+    "fence": 1
+  },
+  "EffectIntent": {
+    "schema_version": 1,
+    "operation_id": "o",
+    "intent_hash": "sha256:282bcbc3f0a34a8a4ac6f00c276fcf66cf3757a3332e83d92208e5079af46922",
+    "request_ref": "request:r"
+  },
+  "PolicyView": {
+    "schema_version": 1,
+    "policy_hash": "sha256:25f14dbefa907158a9507c8e8debc065f5c895b0b6e828827955f856e29503b6",
+    "bundle": {
+      "schema_version": 1,
+      "scope": {
+        "schema_version": 1,
+        "workspace_id": "w",
+        "agent_id": "a",
+        "family": "f"
+      },
+      "sections": [
+        {
+          "schema_version": 1,
+          "name": "instructions",
+          "text": "Help with the task."
+        }
+      ],
+      "model_profile": "fake@1"
+    }
+  }
+}

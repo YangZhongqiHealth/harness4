@@ -1,0 +1,32 @@
+# Copy to .github/workflows/ship-observe.yml after installing Harness4 on the
+# default branch. This offline workflow needs no API secret or write permission.
+name: Ship observe
+on: [pull_request]
+permissions:
+  contents: read
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    steps:
+      # Run the base branch's trusted code and policy, never install PR code.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install .
+      - name: Produce advisory report
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch origin "refs/pull/${PR_NUMBER}/head"
+          HEAD_SHA=$(git rev-parse FETCH_HEAD)
+          MERGE_BASE=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
+          h4 ship --base "$MERGE_BASE" --head "$HEAD_SHA" --checks unknown > ship-report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ship-report
+          path: ship-report.json

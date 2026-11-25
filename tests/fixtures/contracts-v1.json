@@ -1,0 +1,2125 @@
+{
+  "ActionReceipt": {
+    "$defs": {
+      "ArtifactRef": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "minLength": 1,
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "digest": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "title": "Digest",
+            "type": "string"
+          },
+          "mime_type": {
+            "minLength": 1,
+            "title": "Mime Type",
+            "type": "string"
+          },
+          "provenance_refs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Provenance Refs",
+            "type": "array"
+          },
+          "retention_ref": {
+            "minLength": 1,
+            "title": "Retention Ref",
+            "type": "string"
+          },
+          "retrieval_ref": {
+            "minLength": 1,
+            "title": "Retrieval Ref",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "size_bytes": {
+            "minimum": 0,
+            "title": "Size Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "digest",
+          "mime_type",
+          "size_bytes",
+          "retrieval_ref",
+          "retention_ref"
+        ],
+        "title": "ArtifactRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "artifact_refs": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "title": "Artifact Refs",
+        "type": "array"
+      },
+      "operation_id": {
+        "minLength": 1,
+        "title": "Operation Id",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "status": {
+        "enum": [
+          "succeeded",
+          "failed",
+          "unknown_effect"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "summary": {
+        "minLength": 1,
+        "title": "Summary",
+        "type": "string"
+      }
+    },
+    "required": [
+      "operation_id",
+      "status",
+      "summary"
+    ],
+    "title": "ActionReceipt",
+    "type": "object"
+  },
+  "AdmissionReceipt": {
+    "$defs": {
+      "TaskStatus": {
+        "enum": [
+          "queued",
+          "running",
+          "waiting_input",
+          "waiting_event",
+          "waiting_approval",
+          "retry_delay",
+          "reconciling",
+          "cancelling",
+          "succeeded",
+          "partial",
+          "failed",
+          "cancelled",
+          "unknown_effect"
+        ],
+        "title": "TaskStatus",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "status": {
+        "$ref": "#/$defs/TaskStatus"
+      },
+      "stream_cursor": {
+        "default": 0,
+        "minimum": 0,
+        "title": "Stream Cursor",
+        "type": "integer"
+      },
+      "task_id": {
+        "minLength": 1,
+        "title": "Task Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "task_id",
+      "status"
+    ],
+    "title": "AdmissionReceipt",
+    "type": "object"
+  },
+  "ArtifactRef": {
+    "additionalProperties": false,
+    "properties": {
+      "artifact_id": {
+        "minLength": 1,
+        "title": "Artifact Id",
+        "type": "string"
+      },
+      "digest": {
+        "pattern": "^sha256:[0-9a-f]{64}$",
+        "title": "Digest",
+        "type": "string"
+      },
+      "mime_type": {
+        "minLength": 1,
+        "title": "Mime Type",
+        "type": "string"
+      },
+      "provenance_refs": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Provenance Refs",
+        "type": "array"
+      },
+      "retention_ref": {
+        "minLength": 1,
+        "title": "Retention Ref",
+        "type": "string"
+      },
+      "retrieval_ref": {
+        "minLength": 1,
+        "title": "Retrieval Ref",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "size_bytes": {
+        "minimum": 0,
+        "title": "Size Bytes",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "artifact_id",
+      "digest",
+      "mime_type",
+      "size_bytes",
+      "retrieval_ref",
+      "retention_ref"
+    ],
+    "title": "ArtifactRef",
+    "type": "object"
+  },
+  "CandidatePatch": {
+    "$defs": {
+      "Scope": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": {
+            "minLength": 1,
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "family": {
+            "minLength": 1,
+            "title": "Family",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "workspace_id": {
+            "minLength": 1,
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "agent_id",
+          "family"
+        ],
+        "title": "Scope",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "base_policy_hash": {
+        "title": "Base Policy Hash",
+        "type": "string"
+      },
+      "evidence_refs": {
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "title": "Evidence Refs",
+        "type": "array"
+      },
+      "expected_component_hash": {
+        "title": "Expected Component Hash",
+        "type": "string"
+      },
+      "hypothesis": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Hypothesis",
+        "type": "string"
+      },
+      "op": {
+        "const": "replace_section",
+        "default": "replace_section",
+        "title": "Op",
+        "type": "string"
+      },
+      "optimizer_ref": {
+        "minLength": 1,
+        "title": "Optimizer Ref",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "scope": {
+        "$ref": "#/$defs/Scope"
+      },
+      "surface": {
+        "const": "instructions",
+        "default": "instructions",
+        "title": "Surface",
+        "type": "string"
+      },
+      "target": {
+        "pattern": "^[a-z][a-z0-9_]{0,63}$",
+        "title": "Target",
+        "type": "string"
+      },
+      "value": {
+        "maxLength": 20000,
+        "minLength": 1,
+        "title": "Value",
+        "type": "string"
+      }
+    },
+    "required": [
+      "base_policy_hash",
+      "scope",
+      "target",
+      "expected_component_hash",
+      "value",
+      "evidence_refs",
+      "hypothesis",
+      "optimizer_ref"
+    ],
+    "title": "CandidatePatch",
+    "type": "object"
+  },
+  "DemoScorecard": {
+    "$defs": {
+      "PairedCase": {
+        "additionalProperties": false,
+        "properties": {
+          "baseline_pass": {
+            "title": "Baseline Pass",
+            "type": "boolean"
+          },
+          "candidate_pass": {
+            "title": "Candidate Pass",
+            "type": "boolean"
+          },
+          "case_id": {
+            "minLength": 1,
+            "title": "Case Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "split": {
+            "enum": [
+              "target",
+              "anchor"
+            ],
+            "title": "Split",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "split",
+          "baseline_pass",
+          "candidate_pass"
+        ],
+        "title": "PairedCase",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "budget_met": {
+        "title": "Budget Met",
+        "type": "boolean"
+      },
+      "candidate_hash": {
+        "title": "Candidate Hash",
+        "type": "string"
+      },
+      "cases": {
+        "items": {
+          "$ref": "#/$defs/PairedCase"
+        },
+        "title": "Cases",
+        "type": "array"
+      },
+      "evidence_class": {
+        "const": "scripted_demo",
+        "default": "scripted_demo",
+        "title": "Evidence Class",
+        "type": "string"
+      },
+      "expected_case_ids": {
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "title": "Expected Case Ids",
+        "type": "array"
+      },
+      "hard_violations": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Hard Violations",
+        "type": "array"
+      },
+      "incumbent_hash": {
+        "title": "Incumbent Hash",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "incumbent_hash",
+      "candidate_hash",
+      "expected_case_ids",
+      "cases",
+      "budget_met"
+    ],
+    "title": "DemoScorecard",
+    "type": "object"
+  },
+  "DomainError": {
+    "$defs": {
+      "ErrorCode": {
+        "enum": [
+          "INVALID_INPUT",
+          "UNSUPPORTED_CAPABILITY",
+          "NOT_AUTHORIZED",
+          "CONFLICT",
+          "BUDGET_EXHAUSTED",
+          "TIMEOUT",
+          "TRANSIENT_PROVIDER",
+          "INVALID_MODEL_OUTPUT",
+          "UNKNOWN_EFFECT",
+          "INSUFFICIENT_EVIDENCE",
+          "STALE_CANDIDATE"
+        ],
+        "title": "ErrorCode",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "description": "Safe boundary error; adapters must redact before constructing this record.",
+    "properties": {
+      "code": {
+        "$ref": "#/$defs/ErrorCode"
+      },
+      "correlation_id": {
+        "minLength": 1,
+        "title": "Correlation Id",
+        "type": "string"
+      },
+      "message": {
+        "minLength": 1,
+        "title": "Message",
+        "type": "string"
+      },
+      "retryable": {
+        "title": "Retryable",
+        "type": "boolean"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "code",
+      "message",
+      "retryable",
+      "correlation_id"
+    ],
+    "title": "DomainError",
+    "type": "object"
+  },
+  "EffectIntent": {
+    "additionalProperties": false,
+    "properties": {
+      "intent_hash": {
+        "pattern": "^sha256:[0-9a-f]{64}$",
+        "title": "Intent Hash",
+        "type": "string"
+      },
+      "operation_id": {
+        "minLength": 1,
+        "title": "Operation Id",
+        "type": "string"
+      },
+      "request_ref": {
+        "minLength": 1,
+        "title": "Request Ref",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "operation_id",
+      "intent_hash",
+      "request_ref"
+    ],
+    "title": "EffectIntent",
+    "type": "object"
+  },
+  "Event": {
+    "additionalProperties": false,
+    "description": "Durable display event. Payload references point to separately scoped records.",
+    "properties": {
+      "event_id": {
+        "minLength": 1,
+        "title": "Event Id",
+        "type": "string"
+      },
+      "message": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Message"
+      },
+      "payload_refs": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Payload Refs",
+        "type": "array"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "seq": {
+        "minimum": 1,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "task_id": {
+        "minLength": 1,
+        "title": "Task Id",
+        "type": "string"
+      },
+      "timestamp": {
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$",
+        "title": "Timestamp",
+        "type": "string"
+      },
+      "type": {
+        "enum": [
+          "task.started",
+          "message.delta",
+          "tool.started",
+          "tool.completed",
+          "approval.required",
+          "task.waiting",
+          "task.completed",
+          "task.failed",
+          "task.cancelled",
+          "learning.completed"
+        ],
+        "title": "Type",
+        "type": "string"
+      },
+      "workspace_id": {
+        "minLength": 1,
+        "title": "Workspace Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workspace_id",
+      "task_id",
+      "event_id",
+      "seq",
+      "type",
+      "timestamp"
+    ],
+    "title": "Event",
+    "type": "object"
+  },
+  "Lease": {
+    "additionalProperties": false,
+    "properties": {
+      "fence": {
+        "minimum": 1,
+        "title": "Fence",
+        "type": "integer"
+      },
+      "run_id": {
+        "minLength": 1,
+        "title": "Run Id",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "task_id": {
+        "minLength": 1,
+        "title": "Task Id",
+        "type": "string"
+      },
+      "workspace_id": {
+        "minLength": 1,
+        "title": "Workspace Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workspace_id",
+      "task_id",
+      "run_id",
+      "fence"
+    ],
+    "title": "Lease",
+    "type": "object"
+  },
+  "ModelRef": {
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "minLength": 1,
+        "title": "Name",
+        "type": "string"
+      },
+      "provider": {
+        "minLength": 1,
+        "title": "Provider",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "provider",
+      "name"
+    ],
+    "title": "ModelRef",
+    "type": "object"
+  },
+  "PairedCase": {
+    "additionalProperties": false,
+    "properties": {
+      "baseline_pass": {
+        "title": "Baseline Pass",
+        "type": "boolean"
+      },
+      "candidate_pass": {
+        "title": "Candidate Pass",
+        "type": "boolean"
+      },
+      "case_id": {
+        "minLength": 1,
+        "title": "Case Id",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "split": {
+        "enum": [
+          "target",
+          "anchor"
+        ],
+        "title": "Split",
+        "type": "string"
+      }
+    },
+    "required": [
+      "case_id",
+      "split",
+      "baseline_pass",
+      "candidate_pass"
+    ],
+    "title": "PairedCase",
+    "type": "object"
+  },
+  "PendingRequest": {
+    "additionalProperties": false,
+    "properties": {
+      "kind": {
+        "enum": [
+          "input",
+          "event",
+          "approval",
+          "reconciliation"
+        ],
+        "title": "Kind",
+        "type": "string"
+      },
+      "message": {
+        "minLength": 1,
+        "title": "Message",
+        "type": "string"
+      },
+      "request_id": {
+        "minLength": 1,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "request_id",
+      "kind",
+      "message"
+    ],
+    "title": "PendingRequest",
+    "type": "object"
+  },
+  "PolicyBundle": {
+    "$defs": {
+      "Scope": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": {
+            "minLength": 1,
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "family": {
+            "minLength": 1,
+            "title": "Family",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "workspace_id": {
+            "minLength": 1,
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "agent_id",
+          "family"
+        ],
+        "title": "Scope",
+        "type": "object"
+      },
+      "Section": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "pattern": "^[a-z][a-z0-9_]{0,63}$",
+            "title": "Name",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "text": {
+            "maxLength": 20000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "text"
+        ],
+        "title": "Section",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "model_profile": {
+        "minLength": 1,
+        "title": "Model Profile",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "scope": {
+        "$ref": "#/$defs/Scope"
+      },
+      "sections": {
+        "items": {
+          "$ref": "#/$defs/Section"
+        },
+        "minItems": 1,
+        "title": "Sections",
+        "type": "array"
+      }
+    },
+    "required": [
+      "scope",
+      "sections",
+      "model_profile"
+    ],
+    "title": "PolicyBundle",
+    "type": "object"
+  },
+  "PolicyView": {
+    "$defs": {
+      "PolicyBundle": {
+        "additionalProperties": false,
+        "properties": {
+          "model_profile": {
+            "minLength": 1,
+            "title": "Model Profile",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "scope": {
+            "$ref": "#/$defs/Scope"
+          },
+          "sections": {
+            "items": {
+              "$ref": "#/$defs/Section"
+            },
+            "minItems": 1,
+            "title": "Sections",
+            "type": "array"
+          }
+        },
+        "required": [
+          "scope",
+          "sections",
+          "model_profile"
+        ],
+        "title": "PolicyBundle",
+        "type": "object"
+      },
+      "Scope": {
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": {
+            "minLength": 1,
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "family": {
+            "minLength": 1,
+            "title": "Family",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "workspace_id": {
+            "minLength": 1,
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "agent_id",
+          "family"
+        ],
+        "title": "Scope",
+        "type": "object"
+      },
+      "Section": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "pattern": "^[a-z][a-z0-9_]{0,63}$",
+            "title": "Name",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "text": {
+            "maxLength": 20000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "text"
+        ],
+        "title": "Section",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "bundle": {
+        "$ref": "#/$defs/PolicyBundle"
+      },
+      "policy_hash": {
+        "minLength": 1,
+        "title": "Policy Hash",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "policy_hash",
+      "bundle"
+    ],
+    "title": "PolicyView",
+    "type": "object"
+  },
+  "Principal": {
+    "additionalProperties": false,
+    "properties": {
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "subject_id": {
+        "minLength": 1,
+        "title": "Subject Id",
+        "type": "string"
+      },
+      "workspace_id": {
+        "minLength": 1,
+        "title": "Workspace Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workspace_id",
+      "subject_id"
+    ],
+    "title": "Principal",
+    "type": "object"
+  },
+  "Scope": {
+    "additionalProperties": false,
+    "properties": {
+      "agent_id": {
+        "minLength": 1,
+        "title": "Agent Id",
+        "type": "string"
+      },
+      "family": {
+        "minLength": 1,
+        "title": "Family",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "workspace_id": {
+        "minLength": 1,
+        "title": "Workspace Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workspace_id",
+      "agent_id",
+      "family"
+    ],
+    "title": "Scope",
+    "type": "object"
+  },
+  "Section": {
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "pattern": "^[a-z][a-z0-9_]{0,63}$",
+        "title": "Name",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "text": {
+        "maxLength": 20000,
+        "minLength": 1,
+        "title": "Text",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "text"
+    ],
+    "title": "Section",
+    "type": "object"
+  },
+  "TaskResult": {
+    "$defs": {
+      "ActionReceipt": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_refs": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ArtifactRef"
+            },
+            "title": "Artifact Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "unknown_effect"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "minLength": 1,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "operation_id",
+          "status",
+          "summary"
+        ],
+        "title": "ActionReceipt",
+        "type": "object"
+      },
+      "ArtifactRef": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "minLength": 1,
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "digest": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "title": "Digest",
+            "type": "string"
+          },
+          "mime_type": {
+            "minLength": 1,
+            "title": "Mime Type",
+            "type": "string"
+          },
+          "provenance_refs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Provenance Refs",
+            "type": "array"
+          },
+          "retention_ref": {
+            "minLength": 1,
+            "title": "Retention Ref",
+            "type": "string"
+          },
+          "retrieval_ref": {
+            "minLength": 1,
+            "title": "Retrieval Ref",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "size_bytes": {
+            "minimum": 0,
+            "title": "Size Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "digest",
+          "mime_type",
+          "size_bytes",
+          "retrieval_ref",
+          "retention_ref"
+        ],
+        "title": "ArtifactRef",
+        "type": "object"
+      },
+      "ModelRef": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "provider": {
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "provider",
+          "name"
+        ],
+        "title": "ModelRef",
+        "type": "object"
+      },
+      "PendingRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "input",
+              "event",
+              "approval",
+              "reconciliation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "minLength": 1,
+            "title": "Request Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "request_id",
+          "kind",
+          "message"
+        ],
+        "title": "PendingRequest",
+        "type": "object"
+      },
+      "TaskStatus": {
+        "enum": [
+          "queued",
+          "running",
+          "waiting_input",
+          "waiting_event",
+          "waiting_approval",
+          "retry_delay",
+          "reconciling",
+          "cancelling",
+          "succeeded",
+          "partial",
+          "failed",
+          "cancelled",
+          "unknown_effect"
+        ],
+        "title": "TaskStatus",
+        "type": "string"
+      },
+      "UsageSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_microcurrency": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost Microcurrency"
+          },
+          "estimated": {
+            "default": false,
+            "title": "Estimated",
+            "type": "boolean"
+          },
+          "input_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Output Tokens"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "title": "UsageSummary",
+        "type": "object"
+      },
+      "VerificationReport": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_refs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "not_evaluated",
+              "verified",
+              "failed",
+              "inconclusive"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "VerificationReport",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "action_receipts": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ActionReceipt"
+        },
+        "title": "Action Receipts",
+        "type": "array"
+      },
+      "artifacts": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "title": "Artifacts",
+        "type": "array"
+      },
+      "message": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Message"
+      },
+      "model_ref": {
+        "$ref": "#/$defs/ModelRef"
+      },
+      "pending": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/PendingRequest"
+        },
+        "title": "Pending",
+        "type": "array"
+      },
+      "policy_hash": {
+        "minLength": 1,
+        "title": "Policy Hash",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "session_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Session Id"
+      },
+      "status": {
+        "$ref": "#/$defs/TaskStatus"
+      },
+      "task_id": {
+        "minLength": 1,
+        "title": "Task Id",
+        "type": "string"
+      },
+      "trace_id": {
+        "minLength": 1,
+        "title": "Trace Id",
+        "type": "string"
+      },
+      "usage": {
+        "$ref": "#/$defs/UsageSummary"
+      },
+      "verification": {
+        "$ref": "#/$defs/VerificationReport"
+      }
+    },
+    "required": [
+      "task_id",
+      "status",
+      "policy_hash",
+      "model_ref",
+      "trace_id"
+    ],
+    "title": "TaskResult",
+    "type": "object"
+  },
+  "TaskSnapshot": {
+    "$defs": {
+      "TaskStatus": {
+        "enum": [
+          "queued",
+          "running",
+          "waiting_input",
+          "waiting_event",
+          "waiting_approval",
+          "retry_delay",
+          "reconciling",
+          "cancelling",
+          "succeeded",
+          "partial",
+          "failed",
+          "cancelled",
+          "unknown_effect"
+        ],
+        "title": "TaskStatus",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "policy_hash": {
+        "title": "Policy Hash",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "state_version": {
+        "default": 0,
+        "minimum": 0,
+        "title": "State Version",
+        "type": "integer"
+      },
+      "status": {
+        "$ref": "#/$defs/TaskStatus",
+        "default": "queued"
+      },
+      "task_id": {
+        "title": "Task Id",
+        "type": "string"
+      },
+      "workspace_id": {
+        "title": "Workspace Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "workspace_id",
+      "task_id",
+      "policy_hash"
+    ],
+    "title": "TaskSnapshot",
+    "type": "object"
+  },
+  "TaskSpec": {
+    "additionalProperties": false,
+    "properties": {
+      "agent_id": {
+        "minLength": 1,
+        "title": "Agent Id",
+        "type": "string"
+      },
+      "goal": {
+        "maxLength": 100000,
+        "minLength": 1,
+        "title": "Goal",
+        "type": "string"
+      },
+      "inputs": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Inputs",
+        "type": "array"
+      },
+      "outcome_spec_ref": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Outcome Spec Ref"
+      },
+      "output_schema_ref": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Output Schema Ref"
+      },
+      "request_key": {
+        "maxLength": 128,
+        "minLength": 1,
+        "title": "Request Key",
+        "type": "string"
+      },
+      "requested_capabilities": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Requested Capabilities",
+        "type": "array"
+      },
+      "resources": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Resources",
+        "type": "array"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "session_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Session Id"
+      }
+    },
+    "required": [
+      "agent_id",
+      "goal",
+      "request_key"
+    ],
+    "title": "TaskSpec",
+    "type": "object"
+  },
+  "TaskView": {
+    "$defs": {
+      "ActionReceipt": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_refs": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ArtifactRef"
+            },
+            "title": "Artifact Refs",
+            "type": "array"
+          },
+          "operation_id": {
+            "minLength": 1,
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "succeeded",
+              "failed",
+              "unknown_effect"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "minLength": 1,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "operation_id",
+          "status",
+          "summary"
+        ],
+        "title": "ActionReceipt",
+        "type": "object"
+      },
+      "ArtifactRef": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "minLength": 1,
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "digest": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "title": "Digest",
+            "type": "string"
+          },
+          "mime_type": {
+            "minLength": 1,
+            "title": "Mime Type",
+            "type": "string"
+          },
+          "provenance_refs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Provenance Refs",
+            "type": "array"
+          },
+          "retention_ref": {
+            "minLength": 1,
+            "title": "Retention Ref",
+            "type": "string"
+          },
+          "retrieval_ref": {
+            "minLength": 1,
+            "title": "Retrieval Ref",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "size_bytes": {
+            "minimum": 0,
+            "title": "Size Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "digest",
+          "mime_type",
+          "size_bytes",
+          "retrieval_ref",
+          "retention_ref"
+        ],
+        "title": "ArtifactRef",
+        "type": "object"
+      },
+      "ModelRef": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "provider": {
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "provider",
+          "name"
+        ],
+        "title": "ModelRef",
+        "type": "object"
+      },
+      "PendingRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "input",
+              "event",
+              "approval",
+              "reconciliation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "minLength": 1,
+            "title": "Request Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "request_id",
+          "kind",
+          "message"
+        ],
+        "title": "PendingRequest",
+        "type": "object"
+      },
+      "TaskResult": {
+        "additionalProperties": false,
+        "properties": {
+          "action_receipts": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ActionReceipt"
+            },
+            "title": "Action Receipts",
+            "type": "array"
+          },
+          "artifacts": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ArtifactRef"
+            },
+            "title": "Artifacts",
+            "type": "array"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Message"
+          },
+          "model_ref": {
+            "$ref": "#/$defs/ModelRef"
+          },
+          "pending": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/PendingRequest"
+            },
+            "title": "Pending",
+            "type": "array"
+          },
+          "policy_hash": {
+            "minLength": 1,
+            "title": "Policy Hash",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Session Id"
+          },
+          "status": {
+            "$ref": "#/$defs/TaskStatus"
+          },
+          "task_id": {
+            "minLength": 1,
+            "title": "Task Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "minLength": 1,
+            "title": "Trace Id",
+            "type": "string"
+          },
+          "usage": {
+            "$ref": "#/$defs/UsageSummary"
+          },
+          "verification": {
+            "$ref": "#/$defs/VerificationReport"
+          }
+        },
+        "required": [
+          "task_id",
+          "status",
+          "policy_hash",
+          "model_ref",
+          "trace_id"
+        ],
+        "title": "TaskResult",
+        "type": "object"
+      },
+      "TaskSnapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "policy_hash": {
+            "title": "Policy Hash",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "state_version": {
+            "default": 0,
+            "minimum": 0,
+            "title": "State Version",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/$defs/TaskStatus",
+            "default": "queued"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "task_id",
+          "policy_hash"
+        ],
+        "title": "TaskSnapshot",
+        "type": "object"
+      },
+      "TaskStatus": {
+        "enum": [
+          "queued",
+          "running",
+          "waiting_input",
+          "waiting_event",
+          "waiting_approval",
+          "retry_delay",
+          "reconciling",
+          "cancelling",
+          "succeeded",
+          "partial",
+          "failed",
+          "cancelled",
+          "unknown_effect"
+        ],
+        "title": "TaskStatus",
+        "type": "string"
+      },
+      "UsageSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_microcurrency": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost Microcurrency"
+          },
+          "estimated": {
+            "default": false,
+            "title": "Estimated",
+            "type": "boolean"
+          },
+          "input_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Output Tokens"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "title": "UsageSummary",
+        "type": "object"
+      },
+      "VerificationReport": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence_refs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Refs",
+            "type": "array"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "not_evaluated",
+              "verified",
+              "failed",
+              "inconclusive"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "VerificationReport",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "result": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/TaskResult"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "snapshot": {
+        "$ref": "#/$defs/TaskSnapshot"
+      }
+    },
+    "required": [
+      "snapshot"
+    ],
+    "title": "TaskView",
+    "type": "object"
+  },
+  "UsageSummary": {
+    "additionalProperties": false,
+    "properties": {
+      "cost_microcurrency": {
+        "anyOf": [
+          {
+            "minimum": 0,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Cost Microcurrency"
+      },
+      "estimated": {
+        "default": false,
+        "title": "Estimated",
+        "type": "boolean"
+      },
+      "input_tokens": {
+        "anyOf": [
+          {
+            "minimum": 0,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Input Tokens"
+      },
+      "output_tokens": {
+        "anyOf": [
+          {
+            "minimum": 0,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Output Tokens"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "title": "UsageSummary",
+    "type": "object"
+  },
+  "VerificationReport": {
+    "additionalProperties": false,
+    "properties": {
+      "evidence_refs": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Evidence Refs",
+        "type": "array"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "status": {
+        "enum": [
+          "not_evaluated",
+          "verified",
+          "failed",
+          "inconclusive"
+        ],
+        "title": "Status",
+        "type": "string"
+      }
+    },
+    "required": [
+      "status"
+    ],
+    "title": "VerificationReport",
+    "type": "object"
+  }
+}

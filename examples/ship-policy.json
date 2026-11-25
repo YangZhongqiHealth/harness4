@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "mode": "observe",
+  "max_changed_lines": 500,
+  "protected_prefixes": [".github/", "security/", "auth/"],
+  "blocking_severities": ["critical", "high"],
+  "require_passing_checks": true
+}

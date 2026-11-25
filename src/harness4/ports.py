@@ -1,0 +1,26 @@
+"""Service boundaries only; implementations must enforce scope, CAS and fencing."""
+from collections.abc import AsyncIterator
+from typing import Protocol
+
+from .contracts import (
+    AdmissionReceipt, EffectIntent, Event, Lease, PolicyBundle, PolicyView,
+    Principal, TaskSnapshot, TaskSpec, TaskStatus, TaskView,
+)
+
+
+class TaskService(Protocol):
+    async def submit(self, principal: Principal, spec: TaskSpec, request_key: str) -> AdmissionReceipt: ...
+    async def get(self, principal: Principal, task_id: str) -> TaskView: ...
+    async def cancel(self, principal: Principal, task_id: str) -> TaskView: ...
+    def events(self, principal: Principal, task_id: str, after_seq: int) -> AsyncIterator[Event]: ...
+
+
+class StatePort(Protocol):
+    async def load(self, workspace_id: str, task_id: str) -> TaskSnapshot: ...
+    async def commit(self, lease: Lease, expected_version: int, transition: TaskStatus,
+                     events: tuple[Event, ...], effects: tuple[EffectIntent, ...]) -> TaskSnapshot: ...
+
+
+class PolicyReadPort(Protocol):
+    async def resolve(self, workspace_id: str, agent_id: str, family: str) -> PolicyView: ...
+    async def load(self, workspace_id: str, policy_hash: str) -> PolicyBundle: ...
