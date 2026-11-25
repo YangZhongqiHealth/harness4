@@ -36,7 +36,7 @@ CI results above apply to the earlier implementation, not automatically to this 
 
 ## Local persistence increment — 0.4.0a0
 
-Current suite: **183 tests** including SQLite migration/WAL configuration, scoped
+Current suite: **185 tests** including SQLite migration/WAL configuration, scoped
 reads, idempotent requests, immutable policy pins, atomic event/state/result commit,
 late-failure rollback, stale fences, immutable receipts, pending-effect reconciliation,
 restart and actual process-crash recovery, second-coordinator refusal, result/artifact
@@ -44,3 +44,13 @@ namespace checks, digest corruption, symlink/FIFO negatives, orphan collection a
 state schema compatibility. `examples/durable_task.py` demonstrates persisted output
 retrieval after restart without model calls. These checks do not implement or certify
 the eventual tool sandbox, application authority resolver or distributed scheduler.
+
+
+Model gateway + SQLite implementation commit `e8421fb` passed all GitHub CI jobs
+on Python 3.11, 3.12 and 3.13 (183 tests, offline doctor, both installed SDK examples,
+and package builds):
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45671254294
+
+The follow-up Git subprocess bound adds two tests (185 total locally): output is
+limited during reading and a timed-out child is terminated. It does not change
+model, state or authorization semantics.

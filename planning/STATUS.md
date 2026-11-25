@@ -13,7 +13,7 @@ https://github.com/YangZhongqiHealth/harness4
 | H4-006–025 | Not implemented | Follow original dependency graph; do not infer completion from the PR CLI |
 | Open-source packaging | Published | MIT, contribution/security docs, CI, safe offline Actions example, built wheel and installed CLI smoke test |
 
-Validation: `python -m pytest -q` — 183 passed (Python 3.12 locally).
+Validation: `python -m pytest -q` — 185 passed (Python 3.12 locally).
 Prior alpha GitHub CI passed tests, CLI smoke checks and package builds on Python 3.11, 3.12
 and 3.13 for implementation commit `6bbb60d`.
 CI: https://github.com/YangZhongqiHealth/harness4/actions/runs/45542186257
@@ -26,7 +26,9 @@ CI evidence is operator supplied; recommendations are advisory. The broader dura
 assistant and learning runtime remain unimplemented. See planning/RELEASE.md.
 
 Current increment: model gateway and local state 0.4.0a0. See docs/PROVIDERS.md and
-planning/PRODUCT.md. Current remote CI is recorded after publication.
+planning/PRODUCT.md. Core implementation `e8421fb` passed Python 3.11–3.13 CI:
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45671254294
+The follow-up bounded Git reader adds two local tests (185 total).
 
 H4-003 implements storage building blocks, not a durable ship workflow. No provider
 call, tool execution, auto repair or GitHub approval is performed by the store.

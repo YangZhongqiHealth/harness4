@@ -18,7 +18,7 @@ The user's release direction permits a narrow product slice without pretending t
 original dependency backlog is complete. Implement subsequent work in reviewable
 increments with tests and truthful status updates.
 
-Run `python -m pytest -q` (183 passed locally). No live provider test was performed.
+Run `python -m pytest -q` (185 passed locally). No live provider test was performed.
 Do not execute PR-controlled code with credentials. Keep source control policy and
 CI evidence in trusted contexts. Automatic repair, approvals and merging need their
 own authorization, freshness checks, isolation and negative tests.
@@ -39,3 +39,7 @@ No tool execution or grants were added. Complete H4-004 trusted admission and H4
 Persistence semantics: docs/PERSISTENCE.md; example: examples/durable_task.py.
 Recover pending intents before issuing effects. Persist result receipts before
 reduction. Current OS lock and fences are local, not distributed timed leases.
+
+Core model/state commit `e8421fb` passed Python 3.11–3.13 CI. The Git reader now
+bounds stdout while reading and kills timed-out subprocesses; the full suite has
+185 tests. Repository goal remains incomplete until the PRODUCT.md gates are met.

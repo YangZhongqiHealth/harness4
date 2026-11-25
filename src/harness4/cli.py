@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import threading
 from uuid import uuid4
 
 from .contracts import ModelRef, UsageSummary, digest, text_digest
@@ -17,11 +18,38 @@ from .ship import Review, ShipPolicy, ShipReport, SYSTEM_PROMPT, evaluate_policy
 MAX_DIFF_BYTES = 200_000
 
 
-def git(repo: str, *args: str) -> bytes:
-    result = subprocess.run(['git', '-C', repo, *args], capture_output=True, timeout=30, check=False)
-    if result.returncode:
-        raise ValueError('Git operation failed; check the repository and commit references.')
-    return result.stdout
+def git(repo: str, *args: str, max_output_bytes: int = 1_000_000, timeout: float = 30) -> bytes:
+    # Bound output while reading, rather than allocating the entire diff first.
+    with subprocess.Popen(['git', '--no-pager', '-C', repo, *args], stdout=subprocess.PIPE,
+                          stderr=subprocess.DEVNULL) as process:
+        expired = threading.Event()
+
+        def stop():
+            expired.set()
+            process.kill()
+
+        timer = threading.Timer(timeout, stop)
+        timer.daemon = True
+        timer.start()
+        output = bytearray()
+        try:
+            while True:
+                chunk = process.stdout.read(min(65536, max_output_bytes + 1 - len(output)))
+                if not chunk:
+                    break
+                output.extend(chunk)
+                if len(output) > max_output_bytes:
+                    raise ValueError('Git output exceeds the review size limit.')
+            code = process.wait()
+            if expired.is_set() or code:
+                raise ValueError('Git operation failed or timed out; check repository and commit references.')
+            return bytes(output)
+        finally:
+            timer.cancel()
+            timer.join()
+            if process.poll() is None:
+                process.kill()
+            process.wait()
 
 
 def collect_diff(repo: str, base: str, head: str) -> tuple[str, str, tuple[str, ...], str, int]:
@@ -29,7 +57,7 @@ def collect_diff(repo: str, base: str, head: str) -> tuple[str, str, tuple[str, 
     head_sha = git(repo, 'rev-parse', '--verify', '--end-of-options', head + '^{commit}').decode().strip()
     names = git(repo, 'diff', '--no-ext-diff', '--no-textconv', '--no-renames', '--name-only', '-z', base_sha, head_sha, '--')
     files = tuple(p.decode('utf-8', errors='strict') for p in names.split(b'\0') if p)
-    raw = git(repo, 'diff', '--no-ext-diff', '--no-textconv', '--no-renames', '--unified=3', base_sha, head_sha, '--')
+    raw = git(repo, 'diff', '--no-ext-diff', '--no-textconv', '--no-renames', '--unified=3', base_sha, head_sha, '--', max_output_bytes=MAX_DIFF_BYTES)
     if len(raw) > MAX_DIFF_BYTES:
         raise ValueError('Diff exceeds 200 KB. Review smaller changes; no content was sent to a model.')
     diff = raw.decode('utf-8', errors='strict')

@@ -217,3 +217,27 @@ def test_provider_wall_clock_deadline():
     with pytest.raises(ProviderFailure) as caught:
         call(slow, timeout=0.01)
     assert caught.value.error.code == 'TIMEOUT'
+
+
+def test_git_output_is_bounded_while_reading(repo):
+    from harness4.cli import git
+    with pytest.raises(ValueError,match='size limit'):
+        git(str(repo),'show','HEAD:app.py',max_output_bytes=5)
+
+
+def test_git_timeout_kills_child(monkeypatch):
+    import sys
+    import time
+    from harness4.cli import git
+    real_popen=subprocess.Popen
+    children=[]
+    def slow_child(*args,**kwargs):
+        child=real_popen([sys.executable,'-c','import time; time.sleep(30)'],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
+        children.append(child)
+        return child
+    monkeypatch.setattr('harness4.cli.subprocess.Popen',slow_child)
+    start=time.monotonic()
+    with pytest.raises(ValueError,match='timed out'):
+        git('.','status',timeout=0.05)
+    assert time.monotonic()-start<5
+    assert children[0].poll() is not None
