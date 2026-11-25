@@ -31,7 +31,8 @@ checks attempt stale-approval dismissal. Do not promise exactly-once effects.
 Run `python -m pytest -q`: current suite has 246 tests (61 new workflow cases).
 Build a wheel and smoke `h4 ship-github --help`. CI runs Python 3.11–3.13.
 Latest prior public CI: https://github.com/YangZhongqiHealth/harness4/actions/runs/45671729211
-Record the new CI result after pushing this increment.
+Implementation `546f230` passed Python 3.11–3.13 tests/builds:
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45678176491
 
 Public repository: https://github.com/YangZhongqiHealth/harness4 (user authorized).
 Main tracks origin/main. No PyPI release. Use the GitHub noreply author address.

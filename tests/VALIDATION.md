@@ -73,3 +73,7 @@ configuration or model correctness. Previous SDK/crash tests remain in the full 
 The 0.5.0a0 wheel built offline and was installed into a separate smoke environment.
 The installed `ship-github --help` and all 61 GitHub integration tests passed from
 outside the source checkout, with repository pytest configuration disabled.
+
+GitHub CI for implementation `546f230` passed on Python 3.11–3.13, including
+all tests, installed CLI/SDK smoke commands and package builds:
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45678176491

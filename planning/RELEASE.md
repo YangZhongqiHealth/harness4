@@ -33,3 +33,7 @@ This is not a live-qualified release or full product parity. No real provider ca
 or real PR repair/approval has been performed. GitHub App/webhook onboarding, fork
 PRs, CI-failure/conflict repair, human-feedback handling, richer verification and
 quality/learning benchmarks remain milestones. No merge or production-security claim.
+
+Published implementation: `546f230`. GitHub CI passed on Python 3.11–3.13:
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45678176491
+The 0.5.0a0 wheel and installed workflow integration tests passed locally.

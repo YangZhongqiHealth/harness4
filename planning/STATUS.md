@@ -23,7 +23,8 @@ reports. They do not establish live API/model compatibility or review accuracy.
 
 Previous public CI: Python 3.11–3.13 passed at `373e617` (185 tests):
 https://github.com/YangZhongqiHealth/harness4/actions/runs/45671729211
-Current increment CI evidence will be recorded after publication.
+The 0.5.0a0 implementation `546f230` passed GitHub CI on Python 3.11–3.13:
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45678176491
 
 `ship-github` defaults to observation. Actual posting/repair requires `--write` and
 repair policy grants; approval additionally requires `--approve`, policy permission,
