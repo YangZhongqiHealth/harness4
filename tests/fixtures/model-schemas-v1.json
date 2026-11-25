@@ -1,0 +1,1277 @@
+{
+  "CapabilityProfile": {
+    "$defs": {
+      "ModelRef": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "provider": {
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "provider",
+          "name"
+        ],
+        "title": "ModelRef",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "checked_at_unix_ms": {
+        "anyOf": [
+          {
+            "minimum": 1,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Checked At Unix Ms"
+      },
+      "context_window": {
+        "anyOf": [
+          {
+            "minimum": 1,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Context Window"
+      },
+      "max_output_tokens": {
+        "default": 4096,
+        "maximum": 32768,
+        "minimum": 1,
+        "title": "Max Output Tokens",
+        "type": "integer"
+      },
+      "model": {
+        "$ref": "#/$defs/ModelRef"
+      },
+      "native_tools": {
+        "default": false,
+        "title": "Native Tools",
+        "type": "boolean"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "streaming": {
+        "default": false,
+        "title": "Streaming",
+        "type": "boolean"
+      },
+      "structured_output": {
+        "default": false,
+        "title": "Structured Output",
+        "type": "boolean"
+      },
+      "usage_reporting": {
+        "default": false,
+        "title": "Usage Reporting",
+        "type": "boolean"
+      },
+      "verified": {
+        "default": [],
+        "items": {
+          "enum": [
+            "text",
+            "native_tools",
+            "streaming",
+            "structured_output",
+            "usage_reporting"
+          ],
+          "type": "string"
+        },
+        "title": "Verified",
+        "type": "array"
+      }
+    },
+    "required": [
+      "model"
+    ],
+    "title": "CapabilityProfile",
+    "type": "object"
+  },
+  "GenerationSettings": {
+    "additionalProperties": false,
+    "properties": {
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "temperature": {
+        "anyOf": [
+          {
+            "maximum": 2,
+            "minimum": 0,
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Temperature"
+      }
+    },
+    "title": "GenerationSettings",
+    "type": "object"
+  },
+  "Message": {
+    "$defs": {
+      "ToolCall": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments_json": {
+            "maxLength": 100000,
+            "title": "Arguments Json",
+            "type": "string"
+          },
+          "call_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Call Id",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_-]{0,63}$",
+            "title": "Name",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "call_id",
+          "name",
+          "arguments_json"
+        ],
+        "title": "ToolCall",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "content": {
+        "default": "",
+        "maxLength": 1000000,
+        "title": "Content",
+        "type": "string"
+      },
+      "role": {
+        "enum": [
+          "system",
+          "user",
+          "assistant",
+          "tool"
+        ],
+        "title": "Role",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "source_refs": {
+        "default": [],
+        "items": {
+          "type": "string"
+        },
+        "title": "Source Refs",
+        "type": "array"
+      },
+      "tool_call_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Tool Call Id"
+      },
+      "tool_calls": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ToolCall"
+        },
+        "title": "Tool Calls",
+        "type": "array"
+      }
+    },
+    "required": [
+      "role"
+    ],
+    "title": "Message",
+    "type": "object"
+  },
+  "ModelDelta": {
+    "$defs": {
+      "ModelResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "attempt_id": {
+            "minLength": 1,
+            "title": "Attempt Id",
+            "type": "string"
+          },
+          "finish": {
+            "enum": [
+              "stop",
+              "tools",
+              "length",
+              "refusal",
+              "error"
+            ],
+            "title": "Finish",
+            "type": "string"
+          },
+          "model_revision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Model Revision"
+          },
+          "provider_request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Provider Request Id"
+          },
+          "request_id": {
+            "minLength": 1,
+            "title": "Request Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "text": {
+            "default": "",
+            "title": "Text",
+            "type": "string"
+          },
+          "tool_calls": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ToolCall"
+            },
+            "title": "Tool Calls",
+            "type": "array"
+          },
+          "usage": {
+            "$ref": "#/$defs/UsageSummary"
+          }
+        },
+        "required": [
+          "request_id",
+          "attempt_id",
+          "finish"
+        ],
+        "title": "ModelResponse",
+        "type": "object"
+      },
+      "ToolCall": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments_json": {
+            "maxLength": 100000,
+            "title": "Arguments Json",
+            "type": "string"
+          },
+          "call_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Call Id",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_-]{0,63}$",
+            "title": "Name",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "call_id",
+          "name",
+          "arguments_json"
+        ],
+        "title": "ToolCall",
+        "type": "object"
+      },
+      "UsageSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_microcurrency": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost Microcurrency"
+          },
+          "estimated": {
+            "default": false,
+            "title": "Estimated",
+            "type": "boolean"
+          },
+          "input_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Output Tokens"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "title": "UsageSummary",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "attempt_id": {
+        "title": "Attempt Id",
+        "type": "string"
+      },
+      "kind": {
+        "enum": [
+          "text",
+          "final"
+        ],
+        "title": "Kind",
+        "type": "string"
+      },
+      "request_id": {
+        "title": "Request Id",
+        "type": "string"
+      },
+      "response": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ModelResponse"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "seq": {
+        "minimum": 1,
+        "title": "Seq",
+        "type": "integer"
+      },
+      "text": {
+        "default": "",
+        "title": "Text",
+        "type": "string"
+      }
+    },
+    "required": [
+      "request_id",
+      "attempt_id",
+      "seq",
+      "kind"
+    ],
+    "title": "ModelDelta",
+    "type": "object"
+  },
+  "ModelRequest": {
+    "$defs": {
+      "GenerationSettings": {
+        "additionalProperties": false,
+        "properties": {
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "temperature": {
+            "anyOf": [
+              {
+                "maximum": 2,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Temperature"
+          }
+        },
+        "title": "GenerationSettings",
+        "type": "object"
+      },
+      "Message": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "default": "",
+            "maxLength": 1000000,
+            "title": "Content",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "system",
+              "user",
+              "assistant",
+              "tool"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "source_refs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Refs",
+            "type": "array"
+          },
+          "tool_call_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tool Call Id"
+          },
+          "tool_calls": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/ToolCall"
+            },
+            "title": "Tool Calls",
+            "type": "array"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "title": "Message",
+        "type": "object"
+      },
+      "ModelRef": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "provider": {
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "provider",
+          "name"
+        ],
+        "title": "ModelRef",
+        "type": "object"
+      },
+      "ToolCall": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments_json": {
+            "maxLength": 100000,
+            "title": "Arguments Json",
+            "type": "string"
+          },
+          "call_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Call Id",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_-]{0,63}$",
+            "title": "Name",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "call_id",
+          "name",
+          "arguments_json"
+        ],
+        "title": "ToolCall",
+        "type": "object"
+      },
+      "ToolSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "maxLength": 4000,
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_-]{0,63}$",
+            "title": "Name",
+            "type": "string"
+          },
+          "parameters_json": {
+            "maxLength": 100000,
+            "title": "Parameters Json",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "parameters_json"
+        ],
+        "title": "ToolSchema",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "attempt_id": {
+        "maxLength": 256,
+        "minLength": 1,
+        "title": "Attempt Id",
+        "type": "string"
+      },
+      "deadline_unix_ms": {
+        "minimum": 1,
+        "title": "Deadline Unix Ms",
+        "type": "integer"
+      },
+      "generation": {
+        "$ref": "#/$defs/GenerationSettings"
+      },
+      "max_output_tokens": {
+        "default": 4096,
+        "maximum": 32768,
+        "minimum": 1,
+        "title": "Max Output Tokens",
+        "type": "integer"
+      },
+      "messages": {
+        "items": {
+          "$ref": "#/$defs/Message"
+        },
+        "minItems": 1,
+        "title": "Messages",
+        "type": "array"
+      },
+      "model": {
+        "$ref": "#/$defs/ModelRef"
+      },
+      "output_schema_json": {
+        "anyOf": [
+          {
+            "maxLength": 100000,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Output Schema Json"
+      },
+      "request_id": {
+        "maxLength": 256,
+        "minLength": 1,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "tool_choice": {
+        "default": "auto",
+        "enum": [
+          "auto",
+          "required"
+        ],
+        "title": "Tool Choice",
+        "type": "string"
+      },
+      "tools": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ToolSchema"
+        },
+        "title": "Tools",
+        "type": "array"
+      }
+    },
+    "required": [
+      "request_id",
+      "attempt_id",
+      "model",
+      "messages",
+      "deadline_unix_ms"
+    ],
+    "title": "ModelRequest",
+    "type": "object"
+  },
+  "ModelResponse": {
+    "$defs": {
+      "ToolCall": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments_json": {
+            "maxLength": 100000,
+            "title": "Arguments Json",
+            "type": "string"
+          },
+          "call_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Call Id",
+            "type": "string"
+          },
+          "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_-]{0,63}$",
+            "title": "Name",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "call_id",
+          "name",
+          "arguments_json"
+        ],
+        "title": "ToolCall",
+        "type": "object"
+      },
+      "UsageSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_microcurrency": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost Microcurrency"
+          },
+          "estimated": {
+            "default": false,
+            "title": "Estimated",
+            "type": "boolean"
+          },
+          "input_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Output Tokens"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "title": "UsageSummary",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "attempt_id": {
+        "minLength": 1,
+        "title": "Attempt Id",
+        "type": "string"
+      },
+      "finish": {
+        "enum": [
+          "stop",
+          "tools",
+          "length",
+          "refusal",
+          "error"
+        ],
+        "title": "Finish",
+        "type": "string"
+      },
+      "model_revision": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Model Revision"
+      },
+      "provider_request_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Provider Request Id"
+      },
+      "request_id": {
+        "minLength": 1,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "text": {
+        "default": "",
+        "title": "Text",
+        "type": "string"
+      },
+      "tool_calls": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/ToolCall"
+        },
+        "title": "Tool Calls",
+        "type": "array"
+      },
+      "usage": {
+        "$ref": "#/$defs/UsageSummary"
+      }
+    },
+    "required": [
+      "request_id",
+      "attempt_id",
+      "finish"
+    ],
+    "title": "ModelResponse",
+    "type": "object"
+  },
+  "ProbeReport": {
+    "$defs": {
+      "CapabilityProfile": {
+        "additionalProperties": false,
+        "properties": {
+          "checked_at_unix_ms": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Checked At Unix Ms"
+          },
+          "context_window": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Context Window"
+          },
+          "max_output_tokens": {
+            "default": 4096,
+            "maximum": 32768,
+            "minimum": 1,
+            "title": "Max Output Tokens",
+            "type": "integer"
+          },
+          "model": {
+            "$ref": "#/$defs/ModelRef"
+          },
+          "native_tools": {
+            "default": false,
+            "title": "Native Tools",
+            "type": "boolean"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "streaming": {
+            "default": false,
+            "title": "Streaming",
+            "type": "boolean"
+          },
+          "structured_output": {
+            "default": false,
+            "title": "Structured Output",
+            "type": "boolean"
+          },
+          "usage_reporting": {
+            "default": false,
+            "title": "Usage Reporting",
+            "type": "boolean"
+          },
+          "verified": {
+            "default": [],
+            "items": {
+              "enum": [
+                "text",
+                "native_tools",
+                "streaming",
+                "structured_output",
+                "usage_reporting"
+              ],
+              "type": "string"
+            },
+            "title": "Verified",
+            "type": "array"
+          }
+        },
+        "required": [
+          "model"
+        ],
+        "title": "CapabilityProfile",
+        "type": "object"
+      },
+      "ModelRef": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "provider": {
+            "minLength": 1,
+            "title": "Provider",
+            "type": "string"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "provider",
+          "name"
+        ],
+        "title": "ModelRef",
+        "type": "object"
+      },
+      "ProbeResult": {
+        "additionalProperties": false,
+        "properties": {
+          "capability": {
+            "enum": [
+              "text",
+              "native_tools",
+              "streaming",
+              "structured_output",
+              "usage_reporting"
+            ],
+            "title": "Capability",
+            "type": "string"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Error Code"
+          },
+          "passed": {
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "capability",
+          "passed"
+        ],
+        "title": "ProbeResult",
+        "type": "object"
+      },
+      "UsageSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "cost_microcurrency": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cost Microcurrency"
+          },
+          "estimated": {
+            "default": false,
+            "title": "Estimated",
+            "type": "boolean"
+          },
+          "input_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Input Tokens"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Output Tokens"
+          },
+          "schema_version": {
+            "const": 1,
+            "default": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          }
+        },
+        "title": "UsageSummary",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "checks": {
+        "items": {
+          "$ref": "#/$defs/ProbeResult"
+        },
+        "title": "Checks",
+        "type": "array"
+      },
+      "profile": {
+        "$ref": "#/$defs/CapabilityProfile"
+      },
+      "requests_made": {
+        "minimum": 0,
+        "title": "Requests Made",
+        "type": "integer"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      },
+      "usage": {
+        "$ref": "#/$defs/UsageSummary"
+      }
+    },
+    "required": [
+      "profile",
+      "checks",
+      "usage",
+      "requests_made"
+    ],
+    "title": "ProbeReport",
+    "type": "object"
+  },
+  "ProbeResult": {
+    "additionalProperties": false,
+    "properties": {
+      "capability": {
+        "enum": [
+          "text",
+          "native_tools",
+          "streaming",
+          "structured_output",
+          "usage_reporting"
+        ],
+        "title": "Capability",
+        "type": "string"
+      },
+      "error_code": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Error Code"
+      },
+      "passed": {
+        "title": "Passed",
+        "type": "boolean"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "capability",
+      "passed"
+    ],
+    "title": "ProbeResult",
+    "type": "object"
+  },
+  "ToolCall": {
+    "additionalProperties": false,
+    "properties": {
+      "arguments_json": {
+        "maxLength": 100000,
+        "title": "Arguments Json",
+        "type": "string"
+      },
+      "call_id": {
+        "maxLength": 256,
+        "minLength": 1,
+        "title": "Call Id",
+        "type": "string"
+      },
+      "name": {
+        "pattern": "^[A-Za-z_][A-Za-z0-9_-]{0,63}$",
+        "title": "Name",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "call_id",
+      "name",
+      "arguments_json"
+    ],
+    "title": "ToolCall",
+    "type": "object"
+  },
+  "ToolSchema": {
+    "additionalProperties": false,
+    "properties": {
+      "description": {
+        "maxLength": 4000,
+        "title": "Description",
+        "type": "string"
+      },
+      "name": {
+        "pattern": "^[A-Za-z_][A-Za-z0-9_-]{0,63}$",
+        "title": "Name",
+        "type": "string"
+      },
+      "parameters_json": {
+        "maxLength": 100000,
+        "title": "Parameters Json",
+        "type": "string"
+      },
+      "schema_version": {
+        "const": 1,
+        "default": 1,
+        "title": "Schema Version",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "name",
+      "description",
+      "parameters_json"
+    ],
+    "title": "ToolSchema",
+    "type": "object"
+  }
+}

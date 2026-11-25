@@ -23,8 +23,8 @@ narrow PR review slice does not mark unrelated runtime issues complete.
 
 ## Next product milestones
 
-1. Finish H4-002 provider interfaces: scripted provider, capability profiles/probes,
-   native tools and streaming conformance. Current adapter is text-only.
+1. H4-002 implemented in 0.4.0a0: scripted provider, capability profiles/probes,
+   native tools, structured output and streaming conformance. Qualify live endpoints next.
 2. H4-003 persistence and review provenance; independently verify findings and
    report precision/recall on public benchmark cases.
 3. Isolated fix proposals with tests, bounded execution, cancellation and audit.

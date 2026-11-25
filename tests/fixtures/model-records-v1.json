@@ -1,0 +1,158 @@
+{
+  "ToolSchema": {
+    "schema_version": 1,
+    "name": "echo",
+    "description": "Return a value.",
+    "parameters_json": "{\"properties\":{\"value\":{\"type\":\"string\"}},\"required\":[\"value\"],\"type\":\"object\"}"
+  },
+  "ToolCall": {
+    "schema_version": 1,
+    "call_id": "call-1",
+    "name": "echo",
+    "arguments_json": "{\"value\":\"hello\"}"
+  },
+  "Message": {
+    "schema_version": 1,
+    "role": "user",
+    "content": "Hello",
+    "tool_calls": [],
+    "tool_call_id": null,
+    "source_refs": [
+      "input-1"
+    ]
+  },
+  "GenerationSettings": {
+    "schema_version": 1,
+    "temperature": 0.0
+  },
+  "ModelRequest": {
+    "schema_version": 1,
+    "request_id": "logical-1",
+    "attempt_id": "attempt-1",
+    "model": {
+      "schema_version": 1,
+      "provider": "fake",
+      "name": "scripted"
+    },
+    "messages": [
+      {
+        "schema_version": 1,
+        "role": "user",
+        "content": "Hello",
+        "tool_calls": [],
+        "tool_call_id": null,
+        "source_refs": [
+          "input-1"
+        ]
+      }
+    ],
+    "tools": [],
+    "max_output_tokens": 4096,
+    "deadline_unix_ms": 1800000000000,
+    "generation": {
+      "schema_version": 1,
+      "temperature": null
+    },
+    "output_schema_json": null,
+    "tool_choice": "auto"
+  },
+  "ModelResponse": {
+    "schema_version": 1,
+    "request_id": "logical-1",
+    "attempt_id": "attempt-1",
+    "text": "Hello",
+    "tool_calls": [],
+    "finish": "stop",
+    "usage": {
+      "schema_version": 1,
+      "input_tokens": null,
+      "output_tokens": null,
+      "cost_microcurrency": null,
+      "estimated": false
+    },
+    "provider_request_id": null,
+    "model_revision": null
+  },
+  "ModelDelta": {
+    "schema_version": 1,
+    "request_id": "logical-1",
+    "attempt_id": "attempt-1",
+    "seq": 1,
+    "kind": "final",
+    "text": "",
+    "response": {
+      "schema_version": 1,
+      "request_id": "logical-1",
+      "attempt_id": "attempt-1",
+      "text": "Hello",
+      "tool_calls": [],
+      "finish": "stop",
+      "usage": {
+        "schema_version": 1,
+        "input_tokens": null,
+        "output_tokens": null,
+        "cost_microcurrency": null,
+        "estimated": false
+      },
+      "provider_request_id": null,
+      "model_revision": null
+    }
+  },
+  "CapabilityProfile": {
+    "schema_version": 1,
+    "model": {
+      "schema_version": 1,
+      "provider": "fake",
+      "name": "scripted"
+    },
+    "native_tools": true,
+    "streaming": true,
+    "structured_output": false,
+    "usage_reporting": false,
+    "context_window": null,
+    "max_output_tokens": 4096,
+    "verified": [],
+    "checked_at_unix_ms": null
+  },
+  "ProbeResult": {
+    "schema_version": 1,
+    "capability": "text",
+    "passed": true,
+    "error_code": null
+  },
+  "ProbeReport": {
+    "schema_version": 1,
+    "profile": {
+      "schema_version": 1,
+      "model": {
+        "schema_version": 1,
+        "provider": "fake",
+        "name": "scripted"
+      },
+      "native_tools": true,
+      "streaming": true,
+      "structured_output": false,
+      "usage_reporting": false,
+      "context_window": null,
+      "max_output_tokens": 4096,
+      "verified": [],
+      "checked_at_unix_ms": null
+    },
+    "checks": [
+      {
+        "schema_version": 1,
+        "capability": "text",
+        "passed": true,
+        "error_code": null
+      }
+    ],
+    "usage": {
+      "schema_version": 1,
+      "input_tokens": null,
+      "output_tokens": null,
+      "cost_microcurrency": null,
+      "estimated": false
+    },
+    "requests_made": 1
+  }
+}

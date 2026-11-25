@@ -11,13 +11,14 @@ status, and either an offline review fixture or explicit model + endpoint. It em
 commit-pinned JSON with usage and model identity. Fixtures never qualify as eligible.
 See tests/test_ship.py for provider, Git, policy and CLI regression coverage.
 
-H4-001 remains implemented. H4-002 is partial: the text-only adapter does not yet
-provide native tools, streaming or capability probes. H4-003 is dependency-ready.
+H4-001 and the H4-002 model gateway are implemented. Native tools, structured
+output, streaming, fake provider and explicit probes are covered by offline tests;
+live endpoint qualification is still pending. H4-003 is dependency-ready.
 The user's release direction permits a narrow product slice without pretending the
 original dependency backlog is complete. Implement subsequent work in reviewable
 increments with tests and truthful status updates.
 
-Run `python -m pytest -q` (83 passed locally). No live provider test was performed.
+Run `python -m pytest -q` (145 passed locally). No live provider test was performed.
 Do not execute PR-controlled code with credentials. Keep source control policy and
 CI evidence in trusted contexts. Automatic repair, approvals and merging need their
 own authorization, freshness checks, isolation and negative tests.
@@ -29,3 +30,8 @@ must reject disagreement. Original canonical schema fixtures remain unchanged.
 Public repository: https://github.com/YangZhongqiHealth/harness4
 Implementation commit `6bbb60d` passed GitHub CI on Python 3.11–3.13.
 The local main branch tracks origin/main. No PyPI release has been made.
+
+Gateway SDK docs: docs/PROVIDERS.md. Full product gates: planning/PRODUCT.md.
+`h4 doctor` defaults to offline; only --probe authorizes paid requests. Model stream
+text is provisional; only a validated final response can expose proposed tool calls.
+No tool execution or grants were added. Complete H4-003 persistence next.

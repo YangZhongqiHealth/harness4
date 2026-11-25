@@ -18,3 +18,17 @@ and package build) for implementation commit `6bbb60d`.
 Run: https://github.com/YangZhongqiHealth/harness4/actions/runs/45542186257. No real model endpoint, benchmark quality, automatic
 repair, durable runtime, authorization enforcement or trusted approval gate was
 validated. Reports are observe-only and CI evidence is operator supplied.
+
+
+## Model gateway increment — 0.4.0a0
+
+`python -m pytest -q`: **145 passed** locally on Python 3.12 (83 existing tests plus
+62 model conformance/schema tests). New checks cover native tool/result round trips,
+unknown/duplicate/malformed arguments, stable IDs, inline schema restrictions,
+structured output, split UTF-8 and SSE arguments, missing terminators, changed IDs,
+disconnect/cancellation, response bounds, expired deadlines, offline diagnostics,
+fake exhaustion, bounded probe lifecycle, schema compatibility and import direction.
+
+The offline doctor and fake SDK example both ran successfully. No live provider,
+paid probe, code execution broker or repair workflow was exercised. Previous alpha
+CI results above apply to the earlier implementation, not automatically to this one.

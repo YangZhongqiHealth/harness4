@@ -63,12 +63,43 @@ def parser() -> argparse.ArgumentParser:
     ship.add_argument('--key-env', default='H4_MODEL_KEY', help='Environment variable name, never the key itself.')
     ship.add_argument('--max-output-tokens', type=int, default=4096)
     ship.add_argument('--timeout', type=float, default=60)
+    doctor = commands.add_parser('doctor', help='Inspect declared model capabilities; probe only when explicitly requested.')
+    doctor.add_argument('--model', required=True)
+    doctor.add_argument('--base-url', required=True)
+    doctor.add_argument('--key-env', default='H4_MODEL_KEY')
+    doctor.add_argument('--native-tools', action='store_true', help='Declare native tool support and include it in an explicit probe.')
+    doctor.add_argument('--streaming', action='store_true')
+    doctor.add_argument('--structured-output', action='store_true')
+    doctor.add_argument('--usage-reporting', action='store_true')
+    doctor.add_argument('--max-output-tokens', type=int, default=4096)
+    doctor.add_argument('--token-parameter', choices=['max_tokens', 'max_completion_tokens'], default='max_tokens')
+    doctor.add_argument('--timeout', type=float, default=60)
+    probe_mode = doctor.add_mutually_exclusive_group()
+    probe_mode.add_argument('--offline', action='store_true', help='No network access (the default).')
+    probe_mode.add_argument('--probe', action='store_true', help='Authorize up to five small paid requests to the selected endpoint.')
     return root
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
+        if args.command == 'doctor':
+            from .adapters.openai_compatible import OpenAICompatibleProvider
+            from .model_contracts import CapabilityProfile
+            from .model_probe import probe
+            model = ModelRef(provider='openai_compatible', name=args.model)
+            profile = CapabilityProfile(model=model, native_tools=args.native_tools, streaming=args.streaming,
+                                        structured_output=args.structured_output, usage_reporting=args.usage_reporting,
+                                        max_output_tokens=args.max_output_tokens)
+            provider = OpenAICompatibleProvider(base_url=args.base_url, profile=profile, key_env=args.key_env,
+                                               token_parameter=args.token_parameter)
+            if args.probe:
+                report = asyncio.run(probe(provider, model, timeout=args.timeout))
+                print(report.model_dump_json(indent=2))
+                # Unknown usage is a limitation, not a failure of text generation.
+                return 0 if all(check.passed for check in report.checks if check.capability != 'usage_reporting') else 2
+            print(asyncio.run(provider.capabilities(model)).model_dump_json(indent=2))
+            return 0
         policy = ShipPolicy.model_validate_json(args.policy.read_text()) if args.policy else ShipPolicy()
         base, head, files, diff, changed_lines = collect_diff(args.repo, args.base, args.head)
         review = None

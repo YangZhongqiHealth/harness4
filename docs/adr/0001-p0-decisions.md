@@ -54,3 +54,24 @@ base/head commit IDs and policy/diff hashes. All decisions are observe-only; fix
 reviews cannot qualify, and CI status is explicitly supplied by the operator.
 No tools execute and no release pointer or GitHub approval is written. H4-002 remains
 partial until its full provider interface and conformance requirements are met.
+
+## H4-002 model gateway baseline (2026-11-24)
+
+Model records live in `model_contracts.py`, the Protocol in `model_ports.py`, and
+implementations under `adapters/`. Existing task/patch schemas remain unchanged.
+Tools and output schemas use immutable canonical JSON strings, validated as inline
+JSON Schema 2020-12; schema references are deliberately unsupported. Message roles
+are text/system/user/assistant/tool only; unsupported modalities need new contracts.
+Deadlines use integer UTC epoch milliseconds. Logical request and attempt IDs are
+separate. Missing call IDs are derived from logical request ID plus call index.
+
+Only a final stream event after a complete finish and `[DONE]` can expose tool calls.
+Partial text is advisory; malformed streams have no final event. Refused/truncated
+outputs contain no dispatchable calls. Tool proposals never confer execution grants.
+Capabilities distinguish configured declarations from explicit bounded probe results.
+Offline doctor performs no network access; paid probes require `--probe`.
+
+Adapters make one attempt and never retry or redirect. Future kernel retries own
+budget, deadline and ambiguous-usage accounting. The existing text facade and ship
+CLI reuse the gateway. Native tools, streaming and probes are implemented and tested
+offline; live endpoint qualification and execution authority are not claimed.

@@ -72,6 +72,28 @@ or tool-call responses fail with a safe error and exit code 2. Missing token usa
 stays unknown. Real-provider conformance has not yet been tested; compatible endpoint
 and model behavior varies. See the [Chat Completions protocol reference](https://developers.openai.com/api/reference/resources/chat).
 
+## Model gateway and capability checks
+
+The SDK now supports validated native tool calls, structured output, buffered SSE
+streaming, and a deterministic fake provider. The `ship` command remains read-only
+and text-based; model tool support does not execute tools or authorize repairs.
+
+```sh
+# Inspect declarations without network access or an API key.
+h4 doctor --offline --model YOUR_MODEL --base-url https://YOUR_PROVIDER/v1
+
+# Optional: explicitly authorize up to five small model requests to test declared capabilities.
+h4 doctor --probe --model YOUR_MODEL --base-url https://YOUR_PROVIDER/v1 \
+  --native-tools --streaming --structured-output --usage-reporting
+
+# Credential-free SDK example.
+python examples/provider_tools.py
+```
+
+See [provider contracts and conformance](docs/PROVIDERS.md) for limits, capability
+semantics and SDK behavior. A successful probe tests basic protocol exchanges;
+review quality still requires independent evaluation.
+
 ## What a recommendation means
 
 `eligible` is advisory: a completed model review, supplied passing CI evidence, no
@@ -100,10 +122,10 @@ python -m pytest -q
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [current status](planning/STATUS.md), and
-[release plan](planning/RELEASE.md). The original [harness design](docs/DESIGN.md) and
+[release plan](planning/RELEASE.md), and [full product acceptance gates](planning/PRODUCT.md). The original [harness design](docs/DESIGN.md) and
 [dependency backlog](planning/ISSUES.md) remain the longer-term architecture. Their
 proposed assistant/learning commands are not implemented. Contract tests do not
 establish runtime security, durable execution or learning effectiveness.
 
-Next: complete provider conformance, persist review evidence, verify findings,
+Next: qualify real endpoints, persist review evidence, verify findings,
 introduce isolated fix proposals, then policy-controlled GitHub integration.
