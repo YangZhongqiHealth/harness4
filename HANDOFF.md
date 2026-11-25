@@ -1,45 +1,45 @@
 # Handoff
 
 Read README.md, planning/STATUS.md, planning/RELEASE.md and ADR 0001 first.
-The user's clarified goal is a usable MIT-licensed open-source alternative for the
-PR review/fix/approval workflow described by Claude Ship. The first alpha implements
-local read-only review plus observe-mode policies. Do not describe it as feature
-parity, an automatic approval system, or a proven accuracy improvement.
+AGENTS.md was absent from the bootstrap and remains absent.
 
-`h4 ship` accepts Git base/head refs, optional trusted policy, operator-supplied CI
-status, and either an offline review fixture or explicit model + endpoint. It emits
-commit-pinned JSON with usage and model identity. Fixtures never qualify as eligible.
-See tests/test_ship.py for provider, Git, policy and CLI regression coverage.
+The user's goal is a usable MIT open-source Claude Ship alternative, eventually a
+higher-quality Harness 4.0. The latest requested priority is the GitHub review →
+repair → approval loop. This is implemented as a bounded 0.5.0a0 product slice;
+do not claim full parity, superior accuracy or completed generic runtime issues.
 
-H4-001 and the H4-002 model gateway are implemented. Native tools, structured
-output, streaming, fake provider and explicit probes are covered by offline tests;
-live endpoint qualification is still pending. H4-003 local persistence is now implemented; H4-004 and H4-005 are dependency-ready.
-The user's release direction permits a narrow product slice without pretending the
-original dependency backlog is complete. Implement subsequent work in reviewable
-increments with tests and truthful status updates.
+`h4 ship` remains local/advisory. `h4 ship-github` is the opt-in remote coordinator.
+Read docs/GITHUB_WORKFLOW.md before modifying it. Production paths are in github.py,
+github_workflow.py and github_cli.py. Tests use real HTTP adapter + SQLite state,
+a simulated GitHub server, and scripted model replies. No live provider call,
+paid benchmark or live PR repair/approval was performed during implementation.
 
-Run `python -m pytest -q` (185 passed locally). No live provider test was performed.
-Do not execute PR-controlled code with credentials. Keep source control policy and
-CI evidence in trusted contexts. Automatic repair, approvals and merging need their
-own authorization, freshness checks, isolation and negative tests.
+Policy is trusted operator input; CLI flags further narrow write grants. Repair
+commits are single-parent non-force updates, confined to unique replacements in
+allowed changed regular files. CI is read by exact head/name/App ID. Approval uses
+a different GitHub user from the writer and PR author, with classic branch
+protection required. No checkout, shell execution of PR code, merge or branch-rule
+mutation occurs. CI runner isolation is the operator's responsibility.
 
-AGENTS.md was absent from the bootstrap. No independent human contract review is
-recorded. Original TaskService.submit still duplicates request_key; future admission
-must reject disagreement. Original canonical schema fixtures remain unchanged.
+The coordinator reuses H4-003 SQLite intents/receipts/artifacts and local locking.
+Every visible write is journaled before dispatch; uncertain writes block retries.
+`--reconcile` only reads GitHub evidence and persists proven receipts, without model
+calls or remote writes. Absent/ambiguous evidence and policy migrations need human
+inspection. GitHub has no atomic head/check/review transaction; post-write freshness
+checks attempt stale-approval dismissal. Do not promise exactly-once effects.
 
-Public repository: https://github.com/YangZhongqiHealth/harness4
-Implementation commit `6bbb60d` passed GitHub CI on Python 3.11–3.13.
-The local main branch tracks origin/main. No PyPI release has been made.
+Run `python -m pytest -q`: current suite has 246 tests (61 new workflow cases).
+Build a wheel and smoke `h4 ship-github --help`. CI runs Python 3.11–3.13.
+Latest prior public CI: https://github.com/YangZhongqiHealth/harness4/actions/runs/45671729211
+Record the new CI result after pushing this increment.
 
-Gateway SDK docs: docs/PROVIDERS.md. Full product gates: planning/PRODUCT.md.
-`h4 doctor` defaults to offline; only --probe authorizes paid requests. Model stream
-text is provisional; only a validated final response can expose proposed tool calls.
-No tool execution or grants were added. Complete H4-004 trusted admission and H4-005 local tool authority next.
+Public repository: https://github.com/YangZhongqiHealth/harness4 (user authorized).
+Main tracks origin/main. No PyPI release. Use the GitHub noreply author address.
+Keep credentials out of reports/commits. Never execute PR code with write or model
+credentials. Do not reset/delete the state directory to bypass pending effects.
 
-Persistence semantics: docs/PERSISTENCE.md; example: examples/durable_task.py.
-Recover pending intents before issuing effects. Persist result receipts before
-reduction. Current OS lock and fences are local, not distributed timed leases.
-
-Core model/state commit `e8421fb` passed Python 3.11–3.13 CI. The Git reader now
-bounds stdout while reading and kills timed-out subprocesses; the full suite has
-185 tests. Repository goal remains incomplete until the PRODUCT.md gates are met.
+Next product work: live qualification, App/webhook onboarding, finding verification
+and quality evals, then isolated CI/feedback/conflict repair. H4-004/H4-005 generic
+admission/tool services remain dependency-ready. Original TaskService.submit still
+duplicates request_key; eventual admission must reject disagreement. Canonical base
+contract fixtures were not changed. No independent human contract review is recorded.

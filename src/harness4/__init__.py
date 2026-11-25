@@ -1,1 +1,1 @@
-"""Proposed pure contract subset; not a production agent runtime."""
+"""Model-portable review workflows and versioned runtime building blocks."""

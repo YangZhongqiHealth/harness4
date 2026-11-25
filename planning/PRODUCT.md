@@ -42,7 +42,14 @@ claimed when implemented; quality improvements require measurements.
 
 ## Current boundaries
 
-The shipped PR command still observes rather than writes. It does not execute tools,
-repair branches, post reviews, approve or merge. New provider tool support enables
-future execution through an authorized broker; it does not itself add that broker.
-No live provider credential or external paid benchmark is required for development.
+The local `ship` command remains advisory. The 0.5.0a0 `ship-github` slice implements
+opt-in review posting, restricted repair commits, fresh CI reads and policy-gated
+approval with durable intents and explicit evidence reconciliation. It has offline
+HTTP/SQLite lifecycle tests; live model/GitHub qualification remains pending.
+
+It does not execute PR code locally or merge. Only same-repository text PRs and
+classic branch protection are supported. Separate same-model review calls do not
+establish independent verification or higher accuracy. CI failures/conflicts/human
+feedback escalate rather than being repaired automatically. App onboarding, webhooks,
+distributed execution, general admission/tool services and learning remain unfinished.
+See docs/GITHUB_WORKFLOW.md for the exact implemented boundary.

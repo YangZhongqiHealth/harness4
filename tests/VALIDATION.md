@@ -54,3 +54,22 @@ https://github.com/YangZhongqiHealth/harness4/actions/runs/45671254294
 The follow-up Git subprocess bound adds two tests (185 total locally): output is
 limited during reading and a timed-out child is terminated. It does not change
 model, state or authorization semantics.
+
+
+## GitHub lifecycle increment — 0.5.0a0
+
+The complete suite now has 246 tests; 61 cover GitHub workflow behavior with an
+httpx simulated server and real SQLite journal. Integration coverage includes the
+CLI, two review passes, repair commit/tree/ref APIs, a fresh-head review, required
+App-pinned checks, separate-user approval, and restart without duplicate effects.
+Negative cases cover changed head/base/CI, stale approval dismissal, copied reviews,
+unknown network outcomes, evidence-only reconciliation, repair exhaustion, protected
+and invalid paths, symlinks/submodules, unsupported PR types and transport bounds.
+
+No live model, GitHub mutation, fork deployment, sandbox escape or comparative quality
+benchmark was run. Mocked success validates orchestration, not provider/GitHub account
+configuration or model correctness. Previous SDK/crash tests remain in the full suite.
+
+The 0.5.0a0 wheel built offline and was installed into a separate smoke environment.
+The installed `ship-github --help` and all 61 GitHub integration tests passed from
+outside the source checkout, with repository pytest configuration disabled.

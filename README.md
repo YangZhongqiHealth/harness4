@@ -8,8 +8,9 @@ try the offline policy workflow without a model or API key.
 
 Our direction is an open-source alternative for the review → fix → approval workflow
 introduced by [Claude Ship](https://claude.com/resources/articles/introducing-claude-ship).
-Today we implement **read-only review and observe-mode policy evaluation**. Automated
-fixes, CI repair, GitHub review posting and approvals are roadmap items. There is no
+Today we implement **local advisory review plus an opt-in GitHub review → repair →
+approval loop**. The GitHub command posts reviews, creates bounded repair commits,
+waits for actual CI and can approve with a separate account and trusted policy. There is no
 claim of feature parity or better review accuracy. This independent project is not
 affiliated with Anthropic.
 
@@ -96,19 +97,19 @@ review quality still requires independent evaluation.
 
 ## Durable state SDK
 
-The local state repository now provides SQLite task/event/operation transactions,
+The local state repository provides SQLite task/event/operation transactions,
 request idempotency, run fencing, persisted results and digest-verified private
-artifacts. It supports restart recovery building blocks; the ship CLI is not yet
-wired to a durable execution loop.
+artifacts. The GitHub workflow uses this store for durable write intents, receipts and recovery;
+the local `ship` command remains advisory.
 
 ```sh
 python examples/durable_task.py
 ```
 
 See [persistence and recovery semantics](docs/PERSISTENCE.md). Trusted admission,
-authorized tool execution and automated repair remain the next runtime layers.
+general authorized tool execution and the broader runtime remain future layers.
 
-## What a recommendation means
+## What a local recommendation means
 
 `eligible` is advisory: a completed model review, supplied passing CI evidence, no
 blocking findings, and a change within the configured path/size limits. It is not a
@@ -116,9 +117,27 @@ GitHub approval. The model can miss defects; findings have not undergone indepen
 verification. `--checks` is operator-supplied evidence, not a GitHub status query.
 
 Observe mode exits 0 when a report was produced, including `needs_human`; failures
-exit 2. Do not use its exit code as a required merge gate. No command executes code
-from the diff, modifies files, runs tests, pushes commits, approves or merges a PR.
+exit 2. Do not use its exit code as a required merge gate. The local `ship` command does not execute code, modify files, push commits, approve
+or merge. The separate GitHub command can write only when explicitly enabled.
 Keep policies in a trusted checkout; never let the reviewed PR choose its own policy.
+
+## GitHub review, repair and approval
+
+`h4 ship-github` connects to a real GitHub repository using an operator-owned policy
+and a private persistent journal. Start with observation, then enable bounded repairs
+and a separate approval account. See the [setup, example and recovery guide](docs/GITHUB_WORKFLOW.md).
+
+```sh
+h4 ship-github --policy /trusted/project-policy.json --pr 42 \
+  --state-dir "$HOME/.local/state/harness4/project" \
+  --model YOUR_MODEL --base-url https://YOUR_PROVIDER/v1 \
+  --write --approve --check-polls 20
+```
+
+This requires configured credentials, policy grants, trusted CI and branch protection;
+copying the command alone does not enable writes. The loop supports same-repository
+text PRs and does not merge. Tests cover the HTTP/state lifecycle offline; live
+provider/GitHub qualification and review-quality benchmarks remain pending.
 
 ## GitHub Actions
 
@@ -141,5 +160,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [current status](planning/STATUS.md), an
 proposed assistant/learning commands are not implemented. Contract tests do not
 establish runtime security, durable execution or learning effectiveness.
 
-Next: integrate trusted admission and durable execution, qualify real endpoints, verify findings,
-introduce isolated fix proposals, then policy-controlled GitHub integration.
+Next: qualify the GitHub loop with real providers and PRs, improve finding verification,
+add isolated CI-failure repair and GitHub App onboarding, then benchmark quality.

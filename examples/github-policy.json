@@ -1,0 +1,15 @@
+{
+  "repository": "YOUR_OWNER/YOUR_REPOSITORY",
+  "base_branch": "main",
+  "required_checks": [
+    {"name": "REPLACE_WITH_EXACT_CHECK_NAME", "app_id": 1}
+  ],
+  "repair_prefixes": ["src/"],
+  "protected_prefixes": [".github/", "security/", "auth/", "tests/"],
+  "allow_repair": false,
+  "allow_approval": false,
+  "max_changed_lines": 500,
+  "max_files": 20,
+  "max_repair_rounds": 2,
+  "max_context_bytes": 200000
+}

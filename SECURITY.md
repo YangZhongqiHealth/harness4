@@ -1,8 +1,16 @@
 # Security
 
-This alpha performs read-only diff inspection and optional remote model review. It
-is not a sandbox or approval authority. Prompts are not a security boundary; a model
-can be influenced by malicious source content, so reports remain advisory.
+The local `ship` command is advisory. The opt-in `ship-github` command can post
+reviews, create restricted repair commits and approve using a separate GitHub user.
+It is not a code sandbox. Prompts are not a security boundary; malicious source can
+influence model conclusions. Review the deployment and limits in
+[the GitHub workflow guide](docs/GITHUB_WORKFLOW.md) before granting write access.
+
+The coordinator does not execute PR code. CI must run on separately isolated runners
+without the coordinator credentials. Approval requires trusted, App-pinned checks and
+classic branch protection. Keep policy and persistent state outside untrusted code.
+GitHub writes are commit-pinned and journaled, but network ambiguity requires evidence
+reconciliation, and head/check/review operations are not an atomic transaction.
 
 Only send code to providers you are authorized to use. Credentials are read from an
 environment variable inside the adapter; they are not report fields. Provider error

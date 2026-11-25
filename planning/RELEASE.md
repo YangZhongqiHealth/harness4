@@ -21,16 +21,15 @@ narrow PR review slice does not mark unrelated runtime issues complete.
 - Commit author uses the GitHub noreply address.
 - This is an alpha repository publication; no PyPI package has been released.
 
-## Next product milestones
+## GitHub lifecycle increment — 0.5.0a0, 2026-11-25
 
-1. H4-002 implemented in 0.4.0a0: scripted provider, capability profiles/probes,
-   native tools, structured output and streaming conformance. Qualify live endpoints next.
-2. H4-003 local persistence is implemented. Integrate H4-004 admission and H4-005
-   authorized tools next, then independently verify findings and benchmark quality.
-3. Isolated fix proposals with tests, bounded execution, cancellation and audit.
-4. Read-only GitHub status ingestion and head-SHA freshness checks.
-5. Explicitly authorized GitHub posting and policy approvals, subject to branch
-   protection. Never use the current advisory exit code as a merge permission.
+The requested review → repair → approval slice now has a usable CLI and real GitHub
+REST adapter, operator policy, durable write intents, CI evidence, two review passes,
+bounded repair commits and separate-user approvals. Sixty-one new tests cover the loop,
+negative cases and evidence-only recovery. Deployment instructions and a safe-default
+policy are in docs/GITHUB_WORKFLOW.md and examples/github-policy.json.
 
-No automatic repair, model-independent quality advantage, production security,
-or learning performance is claimed by this alpha.
+This is not a live-qualified release or full product parity. No real provider call
+or real PR repair/approval has been performed. GitHub App/webhook onboarding, fork
+PRs, CI-failure/conflict repair, human-feedback handling, richer verification and
+quality/learning benchmarks remain milestones. No merge or production-security claim.

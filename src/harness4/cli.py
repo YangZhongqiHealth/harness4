@@ -76,7 +76,7 @@ def collect_diff(repo: str, base: str, head: str) -> tuple[str, str, tuple[str, 
 
 
 def parser() -> argparse.ArgumentParser:
-    root = argparse.ArgumentParser(prog='h4', description='Open, read-only PR review and policy reports (alpha).')
+    root = argparse.ArgumentParser(prog='h4', description='Open PR review, repair and policy workflows (alpha).')
     commands = root.add_subparsers(dest='command', required=True)
     ship = commands.add_parser('ship', help='Review committed changes; emit an advisory JSON report.')
     ship.add_argument('--repo', default='.')
@@ -105,12 +105,33 @@ def parser() -> argparse.ArgumentParser:
     probe_mode = doctor.add_mutually_exclusive_group()
     probe_mode.add_argument('--offline', action='store_true', help='No network access (the default).')
     probe_mode.add_argument('--probe', action='store_true', help='Authorize up to five small paid requests to the selected endpoint.')
+    github = commands.add_parser('ship-github', help='Review a GitHub PR; explicitly opt into repair and approval.')
+    github.add_argument('--policy', type=Path, required=True, help='Trusted operator-owned GitHub workflow policy JSON.')
+    github.add_argument('--pr', type=int, required=True)
+    github.add_argument('--state-dir', type=Path, required=True, help='Private persistent directory outside all reviewed checkouts.')
+    github.add_argument('--model', required=True)
+    github.add_argument('--base-url', required=True)
+    github.add_argument('--key-env', default='H4_MODEL_KEY')
+    github.add_argument('--github-key-env', default='H4_GITHUB_TOKEN')
+    github.add_argument('--approval-key-env', default='H4_APPROVAL_TOKEN')
+    github.add_argument('--reconcile', action='store_true', help='Only reconcile uncertain writes from remote evidence; no model calls or remote writes.')
+    github.add_argument('--write', action='store_true', help='Authorize posting reviews and policy-allowed repair commits.')
+    github.add_argument('--approve', action='store_true', help='Also authorize policy-gated approval using a separate GitHub user.')
+    github.add_argument('--check-polls', type=int, default=1, help='Bounded CI polls (1–40); rerun with the same state directory to resume.')
+    github.add_argument('--poll-seconds', type=float, default=15)
+    github.add_argument('--max-output-tokens', type=int, default=4096)
+    github.add_argument('--timeout', type=float, default=60)
     return root
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
+        if args.command == 'ship-github':
+            from .github_cli import execute
+            report = asyncio.run(execute(args))
+            print(json.dumps(report, indent=2))
+            return 0 if report['status'] in ('approved', 'eligible', 'reconciled') else 3
         if args.command == 'doctor':
             from .adapters.openai_compatible import OpenAICompatibleProvider
             from .model_contracts import CapabilityProfile
@@ -161,7 +182,10 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     except (ValueError, OSError, subprocess.SubprocessError):
         # Avoid echoing validation inputs, provider output, local paths or Git stderr.
-        print(json.dumps({'error': 'INVALID_INPUT', 'message': 'Review failed. Check refs, policy/review JSON, endpoint, and diff size/type. No approval was issued.'}), file=sys.stderr)
+        message = ('GitHub workflow failed. Inspect configuration and durable write receipts before retrying.'
+                   if args.command == 'ship-github' else
+                   'Review failed. Check refs, policy/review JSON, endpoint, and diff size/type. No approval was issued.')
+        print(json.dumps({'error': 'INVALID_INPUT', 'message': message}), file=sys.stderr)
         return 2
 
 
