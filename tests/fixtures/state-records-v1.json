@@ -1,0 +1,27 @@
+{
+  "StoredStep": {
+    "schema_version": 1,
+    "seq": 1,
+    "snapshot": {
+      "schema_version": 1,
+      "workspace_id": "w",
+      "task_id": "t",
+      "policy_hash": "p",
+      "status": "running",
+      "state_version": 1
+    }
+  },
+  "OperationView": {
+    "schema_version": 1,
+    "workspace_id": "w",
+    "task_id": "t",
+    "intent": {
+      "schema_version": 1,
+      "operation_id": "o",
+      "intent_hash": "sha256:282bcbc3f0a34a8a4ac6f00c276fcf66cf3757a3332e83d92208e5079af46922",
+      "request_ref": "r"
+    },
+    "receipt": null,
+    "status": "pending"
+  }
+}

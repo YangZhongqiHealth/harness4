@@ -75,3 +75,19 @@ Adapters make one attempt and never retry or redirect. Future kernel retries own
 budget, deadline and ambiguous-usage accounting. The existing text facade and ship
 CLI reuse the gateway. Native tools, streaming and probes are implemented and tested
 offline; live endpoint qualification and execution authority are not claimed.
+
+## H4-003 local state baseline (2026-11-24)
+
+SQLiteState uses one OS-locked coordinator, SQLite WAL/FULL and schema version 1.
+A metadata row records canonicalizer version 1. All data keys and reads are scoped
+by workspace. Matching request retries retain their original task/policy pin. Run
+fences are local ownership tokens; takeover after restart increments the fence and
+preserves pending operation intents rather than issuing new effects automatically.
+
+State, steps, events, intents and optional final results share one transaction.
+Receipts are committed separately before reduction. Existing receipts cannot be
+rewritten; unresolved operations cannot silently produce a successful terminal task.
+Content-addressed artifacts are fsynced before their reference commit; orphan cleanup
+is explicit and workspace-scoped. POSIX permission/symlink checks are defense in
+ depth, not a sandbox against processes with the same OS privileges. Application
+admission/authorization and runtime recovery orchestration remain H4-004 onward.

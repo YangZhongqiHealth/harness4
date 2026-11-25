@@ -21,7 +21,8 @@ Reference workflow: https://claude.com/resources/articles/introducing-claude-shi
 
 H4-001–025 remain the dependency backlog. Complete capabilities in increments; do
 not mark original issues done merely because a narrow PR command exists. Provider
-implementation is the current completed increment; durable state is next. Native
+and local state implementations are complete; trusted admission and tool authority
+are next. Native
 API adapters, GitHub App installation, webhooks and operator UI are separate work,
 not implied by a compatible endpoint adapter or CLI.
 

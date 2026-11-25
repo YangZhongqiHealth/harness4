@@ -13,12 +13,12 @@ See tests/test_ship.py for provider, Git, policy and CLI regression coverage.
 
 H4-001 and the H4-002 model gateway are implemented. Native tools, structured
 output, streaming, fake provider and explicit probes are covered by offline tests;
-live endpoint qualification is still pending. H4-003 is dependency-ready.
+live endpoint qualification is still pending. H4-003 local persistence is now implemented; H4-004 and H4-005 are dependency-ready.
 The user's release direction permits a narrow product slice without pretending the
 original dependency backlog is complete. Implement subsequent work in reviewable
 increments with tests and truthful status updates.
 
-Run `python -m pytest -q` (145 passed locally). No live provider test was performed.
+Run `python -m pytest -q` (183 passed locally). No live provider test was performed.
 Do not execute PR-controlled code with credentials. Keep source control policy and
 CI evidence in trusted contexts. Automatic repair, approvals and merging need their
 own authorization, freshness checks, isolation and negative tests.
@@ -34,4 +34,8 @@ The local main branch tracks origin/main. No PyPI release has been made.
 Gateway SDK docs: docs/PROVIDERS.md. Full product gates: planning/PRODUCT.md.
 `h4 doctor` defaults to offline; only --probe authorizes paid requests. Model stream
 text is provisional; only a validated final response can expose proposed tool calls.
-No tool execution or grants were added. Complete H4-003 persistence next.
+No tool execution or grants were added. Complete H4-004 trusted admission and H4-005 local tool authority next.
+
+Persistence semantics: docs/PERSISTENCE.md; example: examples/durable_task.py.
+Recover pending intents before issuing effects. Persist result receipts before
+reduction. Current OS lock and fences are local, not distributed timed leases.

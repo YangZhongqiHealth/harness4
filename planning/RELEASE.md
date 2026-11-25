@@ -25,8 +25,8 @@ narrow PR review slice does not mark unrelated runtime issues complete.
 
 1. H4-002 implemented in 0.4.0a0: scripted provider, capability profiles/probes,
    native tools, structured output and streaming conformance. Qualify live endpoints next.
-2. H4-003 persistence and review provenance; independently verify findings and
-   report precision/recall on public benchmark cases.
+2. H4-003 local persistence is implemented. Integrate H4-004 admission and H4-005
+   authorized tools next, then independently verify findings and benchmark quality.
 3. Isolated fix proposals with tests, bounded execution, cancellation and audit.
 4. Read-only GitHub status ingestion and head-SHA freshness checks.
 5. Explicitly authorized GitHub posting and policy approvals, subject to branch

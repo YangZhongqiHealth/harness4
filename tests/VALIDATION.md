@@ -32,3 +32,15 @@ fake exhaustion, bounded probe lifecycle, schema compatibility and import direct
 The offline doctor and fake SDK example both ran successfully. No live provider,
 paid probe, code execution broker or repair workflow was exercised. Previous alpha
 CI results above apply to the earlier implementation, not automatically to this one.
+
+
+## Local persistence increment — 0.4.0a0
+
+Current suite: **183 tests** including SQLite migration/WAL configuration, scoped
+reads, idempotent requests, immutable policy pins, atomic event/state/result commit,
+late-failure rollback, stale fences, immutable receipts, pending-effect reconciliation,
+restart and actual process-crash recovery, second-coordinator refusal, result/artifact
+namespace checks, digest corruption, symlink/FIFO negatives, orphan collection and
+state schema compatibility. `examples/durable_task.py` demonstrates persisted output
+retrieval after restart without model calls. These checks do not implement or certify
+the eventual tool sandbox, application authority resolver or distributed scheduler.

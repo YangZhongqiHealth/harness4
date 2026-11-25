@@ -94,6 +94,20 @@ See [provider contracts and conformance](docs/PROVIDERS.md) for limits, capabili
 semantics and SDK behavior. A successful probe tests basic protocol exchanges;
 review quality still requires independent evaluation.
 
+## Durable state SDK
+
+The local state repository now provides SQLite task/event/operation transactions,
+request idempotency, run fencing, persisted results and digest-verified private
+artifacts. It supports restart recovery building blocks; the ship CLI is not yet
+wired to a durable execution loop.
+
+```sh
+python examples/durable_task.py
+```
+
+See [persistence and recovery semantics](docs/PERSISTENCE.md). Trusted admission,
+authorized tool execution and automated repair remain the next runtime layers.
+
 ## What a recommendation means
 
 `eligible` is advisory: a completed model review, supplied passing CI evidence, no
@@ -127,5 +141,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [current status](planning/STATUS.md), an
 proposed assistant/learning commands are not implemented. Contract tests do not
 establish runtime security, durable execution or learning effectiveness.
 
-Next: qualify real endpoints, persist review evidence, verify findings,
+Next: integrate trusted admission and durable execution, qualify real endpoints, verify findings,
 introduce isolated fix proposals, then policy-controlled GitHub integration.
