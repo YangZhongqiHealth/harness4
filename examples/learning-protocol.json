@@ -1,0 +1,11 @@
+{
+  "min_target_groups": 100,
+  "min_anchor_groups": 100,
+  "min_gain": 0.02,
+  "alpha": 0.05,
+  "max_anchor_risk": 0.05,
+  "max_candidates": 1,
+  "max_calls": 1000,
+  "max_seconds": 3600,
+  "approval_ttl_seconds": 86400
+}

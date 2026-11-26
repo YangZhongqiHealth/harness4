@@ -1,6 +1,6 @@
 # Harness4
 
-**Open, model-portable PR review and auditable policy reports. MIT licensed.**
+**Open, model-portable PR review, repair and evidence-gated learning. MIT licensed.**
 
 Harness4's first usable alpha reviews a committed Git diff and produces a structured,
 commit-pinned report. Run it locally with your chosen Chat Completions endpoint, or
@@ -9,7 +9,7 @@ try the offline policy workflow without a model or API key.
 Our direction is an open-source alternative for the review → fix → approval workflow
 introduced by [Claude Ship](https://claude.com/resources/articles/introducing-claude-ship).
 Today we implement **local advisory review plus an opt-in GitHub review → repair →
-approval loop**. The GitHub command posts reviews, creates bounded repair commits,
+approval loop**, plus a verifiable, reversible review-policy learning loop. The GitHub command posts reviews, creates bounded repair commits,
 waits for actual CI and can approve with a separate account and trusted policy. There is no
 claim of feature parity or better review accuracy. This independent project is not
 affiliated with Anthropic.
@@ -139,6 +139,25 @@ copying the command alone does not enable writes. The loop supports same-reposit
 text PRs and does not merge. Tests cover the HTTP/state lifecycle offline; live
 provider/GitHub qualification and review-quality benchmarks remain pending.
 
+## Learn from verified feedback, with rollback
+
+The learning loop records revision-bound review evidence, proposes checklist changes
+from verified development feedback, and tests one candidate against fresh target and
+regression cohorts. An explicit operator approval activates the exact evaluated
+version for future GitHub reviews. Rollback restores an earlier policy; retracting
+incorrect feedback invalidates dependent policies.
+
+```sh
+# Complete credential-free lifecycle in a new directory; scripted, no quality claim.
+h4 learning demo --state-dir /tmp/harness4-learning-demo
+```
+
+For real use, follow the [learning guide](docs/LEARNING.md) and
+[research synthesis](docs/research/2026-11-25-learning.md). Production evaluation is
+opt-in, budgeted and may abstain. The learner changes only review guidance; GitHub
+permissions and release gates stay operator-owned. No live improvement or superiority
+over another product has been measured yet.
+
 ## GitHub Actions
 
 [The observe workflow example](examples/ship-observe.yml) uses read-only permissions,
@@ -156,8 +175,8 @@ python -m pytest -q
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [current status](planning/STATUS.md), and
 [release plan](planning/RELEASE.md), and [full product acceptance gates](planning/PRODUCT.md). The original [harness design](docs/DESIGN.md) and
-[dependency backlog](planning/ISSUES.md) remain the longer-term architecture. Their
-proposed assistant/learning commands are not implemented. Contract tests do not
+[dependency backlog](planning/ISSUES.md) remain the longer-term architecture. The general assistant runtime remains unfinished; `h4 learning` implements the
+narrow review-policy lifecycle described above. Contract tests do not
 establish runtime security, durable execution or learning effectiveness.
 
 Next: qualify the GitHub loop with real providers and PRs, improve finding verification,

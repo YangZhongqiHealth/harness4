@@ -100,8 +100,11 @@ class WorkflowJournal:
             await self.state.commit(self.lease, snapshot.state_version, TaskStatus.QUEUED, (), ())
 
     async def effect(self, kind, head, body, action, *, base):
-        operation = text_digest(json.dumps({'repo': self.workspace, 'pr': self.number, 'kind': kind,
-                            'head': head, 'base': base, 'policy': digest(self.policy)}, sort_keys=True))
+        binding = {'repo': self.workspace, 'pr': self.number, 'kind': kind,
+                   'head': head, 'base': base, 'policy': digest(self.policy)}
+        if getattr(self, 'review_policy_hash', None):
+            binding['review_policy'] = self.review_policy_hash
+        operation = text_digest(json.dumps(binding, sort_keys=True))
         if any(event.message == operation for event in self.events):
             prior = await self.state.operation(self.workspace, operation)
             if prior.status != 'succeeded':
@@ -320,7 +323,7 @@ async def approval_protection(api, policy):
 
 async def run_workflow(api: GitHub, policy: GitHubPolicy, number: int, model, journal: WorkflowJournal,
                        *, write=False, approve=False, approver: GitHub | None = None,
-                       check_polls=1, poll_seconds=15, reconcile=False):
+                       check_polls=1, poll_seconds=15, reconcile=False, review_prompt=SYSTEM_PROMPT, observer=None):
     if api.repo != policy.repository or number < 1 or not 1 <= check_polls <= 40 or not 0 <= poll_seconds <= 60:
         raise ValueError('Invalid workflow scope or polling bounds.')
     if approve and (not write or not policy.allow_approval or approver is None or approver.repo != api.repo):
@@ -343,12 +346,12 @@ async def run_workflow(api: GitHub, policy: GitHubPolicy, number: int, model, jo
             raise GitHubFailure('PR author cannot approve their own PR.')
         files, contents = await context(api, policy, number, pr)
         payload = {'base_sha': pr['base']['sha'], 'head_sha': head, 'files': files, 'contents': contents}
-        review = parse_review(json.dumps(strict_object(await model(SYSTEM_PROMPT, payload))), tuple(contents))
+        review = parse_review(json.dumps(strict_object(await model(review_prompt, payload))), tuple(contents))
         for finding in review.findings:
             if finding.line > max(1, len(contents[finding.path].splitlines())):
                 raise GitHubFailure('Review finding is outside the source file.')
         # Independent second pass has no first-pass conclusions in its input.
-        verification = parse_review(json.dumps(strict_object(await model(SYSTEM_PROMPT + '\nPerform an independent second review.', payload))), tuple(contents))
+        verification = parse_review(json.dumps(strict_object(await model(review_prompt + '\nPerform an independent second review.', payload))), tuple(contents))
         for finding in verification.findings:
             if finding.line > max(1, len(contents[finding.path].splitlines())):
                 raise GitHubFailure('Verification finding is outside the source file.')
@@ -357,12 +360,16 @@ async def run_workflow(api: GitHub, policy: GitHubPolicy, number: int, model, jo
             raise GitHubFailure('Too many findings for bounded automatic repair; human review required.')
         current = {'head_sha': head, 'base_sha': pr['base']['sha'], 'review': review.model_dump(mode='json'),
                    'verification': verification.model_dump(mode='json')}
+        if observer is not None:
+            current['learning_episode'] = await observer(payload, current)
+            current['review_policy_hash'] = journal.review_policy_hash
         reports.append(current)
         evidence = await journal.state.put_artifact(journal.workspace, json.dumps(current).encode(), 'application/json')
         await fresh(api, policy, number, pr)
         if write:
             body = {'commit_id': head, 'event': 'COMMENT', 'body':
-                    f'Harness4 review for `{head}`. Policy `{digest(policy)}`.\n\n' +
+                    f'Harness4 review for `{head}`. Policy `{digest(policy)}`.\n' +
+                    (f'Review checklist `{journal.review_policy_hash}`.\n' if getattr(journal, 'review_policy_hash', None) else '') + '\n' +
                     ('Findings:\n' + '\n'.join(f'- {f.severity}: `{display(f.path)}:{f.line}` — {display(f.title)}: {display(f.explanation)}' for f in findings)
                      if findings else 'Two review passes reported no findings. CI and policy gates still apply.')}
             await journal.effect('review', head, body, lambda: api.api('POST', f'pulls/{number}/reviews', body), base=pr['base']['sha'])

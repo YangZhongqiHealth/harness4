@@ -114,6 +114,7 @@ def parser() -> argparse.ArgumentParser:
     github.add_argument('--key-env', default='H4_MODEL_KEY')
     github.add_argument('--github-key-env', default='H4_GITHUB_TOKEN')
     github.add_argument('--approval-key-env', default='H4_APPROVAL_TOKEN')
+    github.add_argument('--learning-dir', type=Path, help='Opt into the initialized production review policy and private episode recording.')
     github.add_argument('--reconcile', action='store_true', help='Only reconcile uncertain writes from remote evidence; no model calls or remote writes.')
     github.add_argument('--write', action='store_true', help='Authorize posting reviews and policy-allowed repair commits.')
     github.add_argument('--approve', action='store_true', help='Also authorize policy-gated approval using a separate GitHub user.')
@@ -121,12 +122,19 @@ def parser() -> argparse.ArgumentParser:
     github.add_argument('--poll-seconds', type=float, default=15)
     github.add_argument('--max-output-tokens', type=int, default=4096)
     github.add_argument('--timeout', type=float, default=60)
+    from .learning.cli import add_parser
+    add_parser(commands)
     return root
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
+        if args.command == 'learning':
+            from .learning.cli import execute
+            report = asyncio.run(execute(args))
+            print(json.dumps(report, indent=2))
+            return 3 if report.get('status') == 'blocked' or report.get('decision') in ('rejected', 'inconclusive') else 0
         if args.command == 'ship-github':
             from .github_cli import execute
             report = asyncio.run(execute(args))
@@ -184,6 +192,8 @@ def main(argv: list[str] | None = None) -> int:
         # Avoid echoing validation inputs, provider output, local paths or Git stderr.
         message = ('GitHub workflow failed. Inspect configuration and durable write receipts before retrying.'
                    if args.command == 'ship-github' else
+                   'Learning command failed. Check trusted input files and inspect persistent state before retrying.'
+                   if args.command == 'learning' else
                    'Review failed. Check refs, policy/review JSON, endpoint, and diff size/type. No approval was issued.')
         print(json.dumps({'error': 'INVALID_INPUT', 'message': message}), file=sys.stderr)
         return 2

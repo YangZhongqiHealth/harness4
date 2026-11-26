@@ -51,5 +51,10 @@ It does not execute PR code locally or merge. Only same-repository text PRs and
 classic branch protection are supported. Separate same-model review calls do not
 establish independent verification or higher accuracy. CI failures/conflicts/human
 feedback escalate rather than being repaired automatically. App onboarding, webhooks,
-distributed execution, general admission/tool services and learning remain unfinished.
+distributed execution and general admission/tool services remain unfinished.
+The 0.6.0a0 review-learning slice now implements evidence intake, bounded reflective
+search, a one-use independent release cohort, operator-approved activation, rollback
+and evidence retraction. Its evaluator boundary is logical within a trusted local
+coordinator. General multi-surface evolution and measured live gains remain pending.
+See docs/LEARNING.md and the research report for scope and statistical assumptions.
 See docs/GITHUB_WORKFLOW.md for the exact implemented boundary.

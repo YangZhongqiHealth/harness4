@@ -17,7 +17,9 @@ jobs:
       - run: python -m pytest -q
       - run: h4 --help
       - run: h4 ship-github --help
+      - run: h4 learning --help
       - run: h4 doctor --offline --model fixture --base-url https://example.invalid/v1
       - run: python examples/provider_tools.py
       - run: python examples/durable_task.py
+      - run: python examples/learning_demo.py
       - run: python -m build

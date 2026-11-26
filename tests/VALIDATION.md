@@ -77,3 +77,25 @@ outside the source checkout, with repository pytest configuration disabled.
 GitHub CI for implementation `546f230` passed on Python 3.11–3.13, including
 all tests, installed CLI/SDK smoke commands and package builds:
 https://github.com/YangZhongqiHealth/harness4/actions/runs/45678176491
+
+
+## Review learning increment — 0.6.0a0
+
+Full suite: **288 passed** locally. Forty-two learning cases cover the complete
+lifecycle, provenance and partition checks, dev-only proposer inputs, malformed
+proposals, retained failures, confidence bounds and low-power abstention, consumed
+cohort reuse, hard process exit/restart, budget/usage/model revision failures,
+transactional promotion failure, one-use/expiry/ABA approval checks, feedback
+retraction with descendant revocation, rollback and demo/production separation.
+
+A 202-case synthetic integration makes 809 HTTP-mocked model calls through the real
+provider adapter and production evaluator, explicitly promotes the winning policy,
+uses it through the GitHub CLI, rolls it back and verifies distinct policy-bound
+review receipts and restart deduplication. No live API mutation or paid inference
+occurs. This is orchestration evidence, not model-quality or statistical sampling
+evidence; the fixtures are deliberately constructed and are not independent real PRs.
+
+The 0.6.0a0 wheel was built offline and installed into a separate environment.
+Installed CLI help and the credential-free learning demo passed outside the source
+checkout. Learning and GitHub integration tests were also run against the installed
+wheel with repository pytest configuration disabled.

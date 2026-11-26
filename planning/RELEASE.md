@@ -37,3 +37,16 @@ quality/learning benchmarks remain milestones. No merge or production-security c
 Published implementation: `546f230`. GitHub CI passed on Python 3.11–3.13:
 https://github.com/YangZhongqiHealth/harness4/actions/runs/45678176491
 The 0.5.0a0 wheel and installed workflow integration tests passed locally.
+
+
+## Review learning increment — 0.6.0a0, 2026-11-25
+
+Implements the requested verified-feedback → proposal → independent evaluation →
+operator approval → activation → rollback loop. New CLI commands and GitHub episode
+integration make it usable beyond a contract/demo. Research synthesis cites primary
+sources and explains adopted mechanisms and rejected unsafe shortcuts.
+
+Local suite: 288 passed. Forty-two learning tests include a production-gate-sized
+HTTP fixture and an actual process exit after cohort consumption. Demo scope cannot
+activate production. No live model quality gain, SOTA result or paid benchmark is
+claimed. See docs/LEARNING.md for deployment, costs and statistical assumptions.

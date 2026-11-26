@@ -1,0 +1,7 @@
+{
+  "model": "YOUR_PINNED_MODEL",
+  "base_url": "https://YOUR_PROVIDER/v1",
+  "revision": "YOUR_EXPECTED_RESPONSE_MODEL",
+  "max_output_tokens": 4096,
+  "timeout": 60.0
+}

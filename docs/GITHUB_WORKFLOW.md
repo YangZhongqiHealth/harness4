@@ -170,3 +170,12 @@ artifact reference. Keep this directory when resuming a run.
 - [Commit-pinned reviews and dismissal](https://docs.github.com/en/rest/pulls/reviews)
 - [Check runs and their producing Apps](https://docs.github.com/en/rest/checks/runs)
 - [Classic branch protection](https://docs.github.com/en/rest/branches/branch-protection)
+
+## Optional learned review guidance
+
+Version 0.6 adds `--learning-dir /trusted/state/learning` to pin an approved checklist
+and record revision-bound feedback episodes. Initialize a production learning scope
+with matching repository and model settings first. Use a separate directory from
+`--state-dir`; both hold local locks. Review reports and durable effect identities
+include the checklist hash. This does not expand write grants or CI/approval authority.
+See [learning, evaluation and rollback](LEARNING.md) before enabling it.
