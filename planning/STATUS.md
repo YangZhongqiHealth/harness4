@@ -15,8 +15,8 @@ https://github.com/YangZhongqiHealth/harness4
 | H4-006–025 | Not implemented as general runtime capabilities | Follow original dependency graph; do not infer completion from the GitHub product slice |
 | Open-source packaging | Published repository; no PyPI release | MIT, contribution/security docs, CI and package smoke checks |
 
-Current local validation: `python -m pytest -q` — 288 tests, including 61 GitHub
-workflow cases and 42 learning cases. The GitHub tests use httpx MockTransport, scripted model responses,
+Current local validation: `python -m pytest -q` — 289 tests, including 61 GitHub
+workflow cases and 43 learning cases. The GitHub tests use httpx MockTransport, scripted model responses,
 and real SQLite storage. They exercise review → repair → new-head review → CI →
 approval, restart deduplication, read-only reconciliation, stale head/base/CI,
 separate principals, protected paths, symlinks, response/pagination limits and CLI
@@ -63,3 +63,10 @@ H4-011–015 capabilities complete. No paid inference was run for this increment
 The 0.6.0a0 wheel builds offline; installed CLI help and the full learning demo pass
 outside the checkout. Installed learning/GitHub integration tests pass independently
 of repository pytest configuration. Public CI evidence is recorded after publication.
+
+
+Public CI for the learning implementation `7dfcdac` passed on Python 3.11–3.13
+(288 tests, installed CLI/demo checks and package builds):
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45736444624
+The subsequent lineage guard adds one regression test (289 locally): a proposer
+cannot turn a previously active baseline into a feedback-dependent candidate.

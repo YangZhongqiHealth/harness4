@@ -514,3 +514,27 @@ def test_evaluation_enforces_production_combined_finding_bound(seeded):
     result = run(store, dataset, Verbose(profile))
     assert result['decision'] == 'inconclusive'
     assert 'production finding bound' in result['reason']
+
+
+def test_proposer_cannot_make_baseline_depend_on_later_evidence(seeded):
+    store, profile, dataset = seeded
+    first = run(store, dataset)
+    store.promote(store.approve(first['report_id'], 'test'))
+    original = store.policy(first['incumbent']).sections[0].text
+    class RestoreAsCandidate(ScriptedBackend):
+        async def __call__(self, system, payload):
+            result = await super().__call__(system, payload)
+            if 'development' in payload:
+                proposal = json.loads(result['text'])
+                proposal['checklist'] = original
+                result['text'] = json.dumps(proposal)
+            else:
+                result['text'] = json.dumps({'summary': 'missed', 'findings': []})
+            return result
+    result = run(store, dataset, RestoreAsCandidate(profile))
+    assert result['decision'] == 'inconclusive'
+    assert result['archive'][0]['reason'] == 'Invalid proposal.'
+    candidates = [json.loads(r[0]) for r in store.db.execute("SELECT payload FROM objects WHERE kind='candidate'")]
+    assert all(c['policy'] != first['incumbent'] for c in candidates)
+    store.retract(store.cases(dataset)[0][0].feedback_id, operator='test', reason='corrected')
+    assert digest(store.policy()) == first['incumbent']

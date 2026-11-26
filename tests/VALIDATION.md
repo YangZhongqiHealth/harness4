@@ -81,7 +81,7 @@ https://github.com/YangZhongqiHealth/harness4/actions/runs/45678176491
 
 ## Review learning increment — 0.6.0a0
 
-Full suite: **288 passed** locally. Forty-two learning cases cover the complete
+Full suite: **289 passed** locally. Forty-three learning cases cover the complete
 lifecycle, provenance and partition checks, dev-only proposer inputs, malformed
 proposals, retained failures, confidence bounds and low-power abstention, consumed
 cohort reuse, hard process exit/restart, budget/usage/model revision failures,
@@ -99,3 +99,10 @@ The 0.6.0a0 wheel was built offline and installed into a separate environment.
 Installed CLI help and the credential-free learning demo passed outside the source
 checkout. Learning and GitHub integration tests were also run against the installed
 wheel with repository pytest configuration disabled.
+
+
+Public CI for the learning implementation `7dfcdac` passed on Python 3.11–3.13
+(288 tests, installed CLI/demo checks and package builds):
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45736444624
+The subsequent lineage guard adds one regression test (289 locally): a proposer
+cannot turn a previously active baseline into a feedback-dependent candidate.

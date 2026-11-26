@@ -156,6 +156,8 @@ async def run_cycle(store, dataset_id, protocol: Protocol, backend):
                     value=proposal.checklist, evidence_refs=proposal.evidence_refs,
                     hypothesis=proposal.hypothesis, optimizer_ref='bounded-reflection-v1')
                 candidate = apply_patch(incumbent, patch, allowed_sections=frozenset({'review_checklist'}))
+                if store.db.execute('SELECT 1 FROM activations WHERE policy=?', (digest(candidate),)).fetchone():
+                    raise LearningError('Use rollback for a previously active policy; do not create cyclic lineage.')
             except (ValueError, TypeError):
                 rejected = store.put('rejected_proposal', {'cycle': cycle, 'text': raw, 'attempt': len(archive)})
                 archive.append({'rejected': rejected, 'reason': 'Invalid proposal.'})

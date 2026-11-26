@@ -46,7 +46,14 @@ operator approval → activation → rollback loop. New CLI commands and GitHub 
 integration make it usable beyond a contract/demo. Research synthesis cites primary
 sources and explains adopted mechanisms and rejected unsafe shortcuts.
 
-Local suite: 288 passed. Forty-two learning tests include a production-gate-sized
+Local suite: 289 passed. Forty-three learning tests include a production-gate-sized
 HTTP fixture and an actual process exit after cohort consumption. Demo scope cannot
 activate production. No live model quality gain, SOTA result or paid benchmark is
 claimed. See docs/LEARNING.md for deployment, costs and statistical assumptions.
+
+
+Public CI for the learning implementation `7dfcdac` passed on Python 3.11–3.13
+(288 tests, installed CLI/demo checks and package builds):
+https://github.com/YangZhongqiHealth/harness4/actions/runs/45736444624
+The subsequent lineage guard adds one regression test (289 locally): a proposer
+cannot turn a previously active baseline into a feedback-dependent candidate.

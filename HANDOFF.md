@@ -29,7 +29,7 @@ calls or remote writes. Absent/ambiguous evidence and policy migrations need hum
 inspection. GitHub has no atomic head/check/review transaction; post-write freshness
 checks attempt stale-approval dismissal. Do not promise exactly-once effects.
 
-Run `python -m pytest -q`: current suite has 288 tests (61 workflow cases and 42 learning cases).
+Run `python -m pytest -q`: current suite has 289 tests (61 workflow cases and 43 learning cases).
 Build a wheel and smoke `h4 ship-github --help`. CI runs Python 3.11–3.13.
 Latest prior public CI: https://github.com/YangZhongqiHealth/harness4/actions/runs/45671729211
 Implementation `546f230` passed Python 3.11–3.13 tests/builds:

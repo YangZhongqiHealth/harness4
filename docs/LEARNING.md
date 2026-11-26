@@ -174,6 +174,8 @@ h4 learning retract --state-dir /trusted/state/learning \
 ```
 
 Rollback restores a compatible, non-revoked policy that was previously active.
+The proposer cannot reintroduce an already activated policy as a new candidate;
+this prevents cyclic lineage and keeps the original baseline independent of feedback.
 It affects future reviews, not already posted reviews or repair commits. Retraction
 invalidates dependent candidates and their descendants, invalidates pending approvals,
 and restores baseline if the active policy is affected. Submit corrected feedback
