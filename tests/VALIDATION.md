@@ -114,3 +114,12 @@ credential-free quickstart with verified JSON excerpt, a local review reference 
 an editorial research note. Checked local documentation links and section anchors;
 ran the installed learning demo and local `ship` quickstart. The displayed demo fields
 match actual output. Runtime behavior and the 289-test baseline are unchanged.
+
+## Usage map and Claude Ship comparison — 2026-11-25
+
+Documentation-only addition: a setup-dependency DAG, goal-to-command table and
+source-linked comparison against Claude Ship's announcement, product page and
+current overview docs. The comparison distinguishes implemented Harness4 controls,
+features not described in the reviewed sources, and acknowledged product gaps.
+Checked command names against the CLI parser, local links and README anchors.
+No runtime changes or comparative accuracy/cost results are implied.
