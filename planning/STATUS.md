@@ -70,3 +70,9 @@ Public CI for the learning implementation `7dfcdac` passed on Python 3.11–3.13
 https://github.com/YangZhongqiHealth/harness4/actions/runs/45736444624
 The subsequent lineage guard adds one regression test (289 locally): a proposer
 cannot turn a previously active baseline into a feedback-dependent candidate.
+
+README positioning review (2026-11-26): the landing page now leads with the
+open-source Claude Ship alternative and verifiable checklist-learning lifecycle.
+Added adoption modes, a worked learning example and a clear current/next capability
+matrix. Repository naming and implementation scope are unchanged. Validation:
+289 tests passed; installed demo output, local links and section anchors checked.

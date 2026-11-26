@@ -131,3 +131,19 @@ concrete learning example, and concise comparison. Detailed workflows and compar
 remain in linked references. Checked relative links, navigation anchors, citation
 references and SVG XML. Reran the installed credential-free demo and confirmed the
 README's selected output fields exactly match. Runtime implementation is unchanged.
+
+## README positioning review — 2026-11-26
+
+Reworked the README around the open-source Claude Ship alternative and verifiable
+review-checklist learning: explicit first-screen positioning, user-benefit table,
+worked feedback example, release gates, adoption modes, balanced comparison and
+implemented/next-milestone matrix. Retained the existing accessible SVG overview
+and repository/CLI name; no product rename or runtime changes.
+
+Rechecked Claude Ship's official overview and product page on 2026-11-26. Checked
+README relative links and section anchors, and matched the selected JSON fields
+against the demo run with the installed 0.6.0a0 smoke environment. The ambient Python
+could not import the uninstalled package when running the demo directly; the installed
+environment succeeded. Full repository suite: `python -m pytest -q` — 289 passed.
+`git diff --check` passed. No live model calls, GitHub PR mutations or measured quality
+gains are claimed by this documentation change.
