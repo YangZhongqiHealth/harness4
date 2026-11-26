@@ -147,19 +147,18 @@ To use an approved learned checklist and record feedback episodes, add
 A useful lesson needs evidence before it becomes the next review policy.
 
 ```mermaid
-flowchart TD
-    Evidence["Recorded reviews + verified feedback"] --> Dev["Development cases<br/>Propose and compare checklists"]
-    Dev --> Candidate["One selected candidate"]
-    Candidate --> Eval["Fresh target + regression cohorts<br/>Evaluate against current policy"]
-    Eval -->|Insufficient evidence or regression| Stop["Keep current policy"]
-    Eval -->|Release gates pass| Approve["Operator inspects and approves"]
-    Approve --> Active["Activate a versioned checklist<br/>Future GitHub reviews use it"]
-    Active -->|Explicit rollback| Previous["Restore a previously active version"]
-    Active -.->|New reviews and verified feedback| Evidence
+flowchart LR
+    Evidence["Verified<br/>feedback"] --> Dev["Propose + select<br/>Development data"]
+    Dev --> Eval["Evaluate<br/>Fresh release data"]
+    Eval -->|Pass| Approve["Operator<br/>approval"]
+    Eval -->|Fail or uncertain| Stop["Keep current<br/>policy"]
+    Approve --> Active["Activate<br/>Future reviews"]
+    Active -->|Rollback| Previous["Restore prior<br/>version"]
+    Active -.->|New evidence| Evidence
     classDef data fill:#eff6ff,stroke:#2563eb,color:#172554
     classDef gate fill:#f0fdf4,stroke:#16a34a,color:#14532d
     classDef hold fill:#fff7ed,stroke:#ea580c,color:#7c2d12
-    class Evidence,Dev,Candidate data
+    class Evidence,Dev data
     class Eval,Approve,Active gate
     class Stop,Previous hold
 ```
