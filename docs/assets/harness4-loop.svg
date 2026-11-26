@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+  <title id="title">Harness4: execute a review, then evaluate what it learns</title>
+  <desc id="desc">The execution path reviews and repairs a PR, checks GitHub CI and policy, and optionally approves. A separate learning path uses verified feedback, fresh evaluation data and human approval to release a checklist for future reviews. Rejected candidates keep the current policy. Rollback restores a prior checklist.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#64748b" stroke-width="1.5"/></marker>
+    <marker id="green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#047857" stroke-width="1.5"/></marker>
+  </defs>
+  <rect x="1" y="1" width="798" height="598" rx="22" fill="#f8fafc" stroke="#cbd5e1"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+    <text x="38" y="49" font-size="15" font-weight="700" letter-spacing="2" fill="#2563eb">01 / EXECUTE</text>
+    <text x="38" y="83" font-size="27" font-weight="700" fill="#0f172a">Move a pull request forward.</text>
+    <g fill="#ffffff" stroke="#93c5fd" stroke-width="1.5">
+      <rect x="38" y="108" width="218" height="108" rx="12"/>
+      <rect x="291" y="108" width="218" height="108" rx="12"/>
+      <rect x="544" y="108" width="218" height="108" rx="12"/>
+    </g>
+    <g font-size="23" font-weight="650" fill="#0f172a" text-anchor="middle">
+      <text x="147" y="151">Review + repair</text>
+      <text x="400" y="151">CI + policy</text>
+      <text x="653" y="151">Approval</text>
+    </g>
+    <g font-size="18" fill="#475569" text-anchor="middle">
+      <text x="147" y="184">Recheck every fix</text>
+      <text x="400" y="184">Exact commit checks</text>
+      <text x="653" y="184">Separate account</text>
+    </g>
+    <g fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M260 162 H284"/><path d="M513 162 H537"/>
+      <path d="M147 220 V263" stroke-dasharray="4 5"/>
+    </g>
+    <text x="174" y="250" font-size="17" fill="#475569">Record evidence · verify feedback</text>
+    <path d="M38 279 H762" stroke="#cbd5e1"/>
+    <text x="38" y="316" font-size="15" font-weight="700" letter-spacing="2" fill="#047857">02 / LEARN — OPTIONAL</text>
+    <text x="38" y="350" font-size="27" font-weight="700" fill="#0f172a">Test a better way to review.</text>
+    <g fill="#ffffff" stroke="#6ee7b7" stroke-width="1.5">
+      <rect x="38" y="375" width="218" height="108" rx="12"/>
+      <rect x="291" y="375" width="218" height="108" rx="12"/>
+      <rect x="544" y="375" width="218" height="108" rx="12"/>
+    </g>
+    <g font-size="23" font-weight="650" fill="#0f172a" text-anchor="middle">
+      <text x="147" y="418">Propose</text>
+      <text x="400" y="418">Evaluate</text>
+      <text x="653" y="418">Human release</text>
+    </g>
+    <g font-size="18" fill="#475569" text-anchor="middle">
+      <text x="147" y="451">Development cases</text>
+      <text x="400" y="451">Fresh data + regressions</text>
+      <text x="653" y="451">Approve, then activate</text>
+    </g>
+    <g fill="none" stroke="#047857" stroke-width="2" marker-end="url(#green)">
+      <path d="M260 429 H284"/><path d="M513 429 H537"/>
+      <path d="M653 487 V515 Q653 531 637 531 H53 Q22 531 22 500 V165 Q22 162 31 162"/>
+    </g>
+    <rect x="119" y="516" width="470" height="29" rx="8" fill="#f8fafc"/>
+    <text x="354" y="536" font-size="18" font-weight="600" fill="#047857" text-anchor="middle">Approved checklist → future reviews</text>
+    <text x="400" y="575" font-size="17" fill="#475569" text-anchor="middle">Reject → keep current policy. Roll back → restore a prior version.</text>
+  </g>
+</svg>

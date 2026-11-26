@@ -123,3 +123,11 @@ current overview docs. The comparison distinguishes implemented Harness4 control
 features not described in the reviewed sources, and acknowledged product gaps.
 Checked command names against the CLI parser, local links and README anchors.
 No runtime changes or comparative accuracy/cost results are implied.
+
+## README editorial review — 2026-11-26
+
+Documentation-only rewrite: shorter product narrative, one accessible SVG overview,
+concrete learning example, and concise comparison. Detailed workflows and comparison
+remain in linked references. Checked relative links, navigation anchors, citation
+references and SVG XML. Reran the installed credential-free demo and confirmed the
+README's selected output fields exactly match. Runtime implementation is unchanged.
