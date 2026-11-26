@@ -106,3 +106,11 @@ Public CI for the learning implementation `7dfcdac` passed on Python 3.11–3.13
 https://github.com/YangZhongqiHealth/harness4/actions/runs/45736444624
 The subsequent lineage guard adds one regression test (289 locally): a proposer
 cannot turn a previously active baseline into a feedback-dependent candidate.
+
+## README presentation refresh — 2026-11-25
+
+Documentation-only change: product-first README, two native Mermaid diagrams,
+credential-free quickstart with verified JSON excerpt, a local review reference and
+an editorial research note. Checked local documentation links and section anchors;
+ran the installed learning demo and local `ship` quickstart. The displayed demo fields
+match actual output. Runtime behavior and the 289-test baseline are unchanged.

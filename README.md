@@ -1,22 +1,46 @@
+<div align="center">
+
 # Harness4
 
-**Open, model-portable PR review, repair and evidence-gated learning. MIT licensed.**
+### Review. Repair. Learn. Keep control.
 
-Harness4's first usable alpha reviews a committed Git diff and produces a structured,
-commit-pinned report. Run it locally with your chosen Chat Completions endpoint, or
-try the offline policy workflow without a model or API key.
+**Open-source PR automation with a verifiable, reversible learning loop.**
 
-Our direction is an open-source alternative for the review → fix → approval workflow
-introduced by [Claude Ship](https://claude.com/resources/articles/introducing-claude-ship).
-Today we implement **local advisory review plus an opt-in GitHub review → repair →
-approval loop**, plus a verifiable, reversible review-policy learning loop. The GitHub command posts reviews, creates bounded repair commits,
-waits for actual CI and can approve with a separate account and trusted policy. There is no
-claim of feature parity or better review accuracy. This independent project is not
-affiliated with Anthropic.
+[![CI](https://github.com/YangZhongqiHealth/harness4/actions/workflows/ci.yml/badge.svg)](https://github.com/YangZhongqiHealth/harness4/actions/workflows/ci.yml)
+[![MIT license](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776ab)](pyproject.toml)
+[![Alpha](https://img.shields.io/badge/status-alpha-f59e0b)](planning/STATUS.md)
 
-## Install from this repository
+[Quickstart](#quickstart) · [How it works](#how-it-works) · [Learning](#a-learning-loop-you-can-audit) · [Docs](#documentation) · [Contribute](#build-with-us)
 
-Python 3.11+ and Git are required:
+</div>
+
+Harness4 reviews pull requests, proposes bounded repairs, checks GitHub CI, and can
+approve under rules you control. Its learning loop turns verified feedback into
+candidate review strategies, tests them against fresh evidence, and lets you approve
+or roll back the versions used by future reviews.
+
+**Bring a compatible model endpoint. Run the coordinator on your infrastructure.
+Keep your policies, evidence and approval decisions under your control.**
+
+Built for maintainers automating PR review, teams that need auditable AI workflows,
+and researchers testing how an agent's harness can improve over time.
+
+## Why Harness4?
+
+| What you want | What Harness4 gives you |
+|---|---|
+| **Follow through on a review** | A GitHub review → bounded repair → fresh review → CI → approval workflow. |
+| **Learn from recurring mistakes** | Verified feedback becomes a candidate checklist, evaluated on separate target and regression cohorts. |
+| **Control what changes** | Explicit write grants, protected paths, a separate approval account and human approval of learned policies. |
+| **Understand what happened** | Commit-pinned reports, policy versions, durable write receipts and an auditable learning history. |
+| **Recover when something goes wrong** | Evidence-based reconciliation of uncertain writes, policy rollback and revocation after feedback corrections. |
+| **Choose your model** | An explicit Chat Completions-compatible endpoint, including local endpoints that satisfy the adapter contract. |
+
+## Quickstart
+
+**Python 3.11+ and Git.** Install from this repository; Harness4 is not yet published
+to PyPI. These commands use a macOS/Linux shell:
 
 ```sh
 git clone https://github.com/YangZhongqiHealth/harness4.git
@@ -24,160 +48,194 @@ cd harness4
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install .
-h4 --help
+
+# Run the complete learning lifecycle. No API key or GitHub token needed.
+python examples/learning_demo.py
 ```
 
-The package is not published to PyPI; install this checkout rather than an unrelated
-package with the same name. Windows users can activate `.venv\Scripts\activate`.
+The demo creates temporary state, learns a candidate checklist, evaluates it,
+activates it and rolls it back. Selected fields from its JSON output:
 
-## Try it without a key
+```json
+{
+  "evidence_class": "scripted_demo",
+  "quality_claim": false,
+  "decision": "eligible",
+  "fresh_review_finding_count": 1,
+  "rollback_review_finding_count": 0,
+  "generation": 2
+}
+```
 
-Against any Git repository with at least two commits:
+In this fixture, the new checklist catches a missing-value bug; rolling back restores
+the original behavior. The demo uses scripted model replies and real persistence,
+activation and rollback. It demonstrates the lifecycle, not real-model accuracy.
+
+To keep the demo's audit history, use a **new directory**:
 
 ```sh
-h4 ship --repo /path/to/your/repo --base HEAD~1 --head HEAD
+h4 learning demo --state-dir /tmp/harness4-learning-demo
+h4 learning status --state-dir /tmp/harness4-learning-demo
 ```
 
-It emits JSON with the exact commit IDs, diff and policy digests, changed files,
-change size, CI evidence, and reasons for human review. No model is called unless
-`--model` is supplied. To exercise a scripted review:
+## How it works
+
+Two connected loops: one handles a pull request; the other evaluates changes to the
+review guidance used on future pull requests.
+
+```mermaid
+flowchart LR
+    PR["Pull request"] --> Review["Review pinned code<br/>Two model passes"]
+    Review -->|Findings| Repair["Bounded repair<br/>Allowed files only"]
+    Repair -->|New commit| Review
+    Review -->|No findings| Gate["GitHub CI<br/>+ trusted policy"]
+    Gate -->|Checks pass| Approve["Approval<br/>Separate account"]
+    Gate -->|Blocked or uncertain| Human["Human review"]
+    Repair -->|Budget exhausted| Human
+    classDef work fill:#eff6ff,stroke:#2563eb,color:#172554
+    classDef control fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    classDef stop fill:#fff7ed,stroke:#ea580c,color:#7c2d12
+    class PR,Review,Repair work
+    class Gate,Approve control
+    class Human stop
+```
+
+Remote writes require explicit opt-in and trusted policy grants. Approval requires
+passing checks on the reviewed commit, a separate GitHub user and branch protection.
+The coordinator does not execute PR code or merge PRs. See the
+[GitHub workflow guide](docs/GITHUB_WORKFLOW.md) for setup and recovery.
+
+### Start with a local review
+
+Inside the cloned repository, inspect the latest committed change without credentials:
 
 ```sh
-h4 ship --repo /path/to/your/repo --base HEAD~1 \
-  --review-file examples/review.json --checks passed
+h4 ship --repo . --base HEAD~1 --head HEAD
 ```
 
-Fixture output is marked `fixture` and can never yield an eligible recommendation.
-Only committed changes are included; uncommitted files are not reviewed. For a PR,
-pass its merge-base commit as `--base` and the PR head commit as `--head`.
-
-## Review with your model
-
-Set `H4_MODEL_KEY` in your environment using your preferred secret manager, then:
+This produces a structured policy report without calling a model. To review another
+repository with a model, configure `H4_MODEL_KEY` in your environment, then run:
 
 ```sh
-h4 ship --repo /path/to/your/repo --base HEAD~1 \
-  --model YOUR_MODEL_NAME --base-url https://YOUR_PROVIDER/v1 \
-  --policy examples/ship-policy.json --checks unknown > report.json
+h4 ship --repo /path/to/your/repo --base HEAD~1 --head HEAD \
+  --model YOUR_MODEL --base-url https://YOUR_PROVIDER/v1 \
+  --policy examples/ship-policy.json --checks unknown
 ```
 
-This sends the changed filenames and diff to the explicitly selected endpoint and
-may incur provider charges. Use `--key-env OTHER_KEY_VARIABLE` for another credential
-reference. Loopback HTTP endpoints are supported for local models. Remote endpoints
-require HTTPS. Each invocation makes at most one request, with a default 60-second
-wall-clock timeout, 4,096-token output ceiling and a 200 KB diff limit. Binary diffs
-are rejected for human review. There are no retries, redirects or endpoint fallback.
+Only committed changes are reviewed. Model calls send the diff to your configured
+endpoint and may incur charges. Local recommendations are advisory; the local
+command's exit code is not a merge gate. [Local review reference →](docs/LOCAL_REVIEW.md)
 
-The text-only adapter requires a complete JSON review. Refused, truncated, malformed,
-or tool-call responses fail with a safe error and exit code 2. Missing token usage
-stays unknown. Real-provider conformance has not yet been tested; compatible endpoint
-and model behavior varies. See the [Chat Completions protocol reference](https://developers.openai.com/api/reference/resources/chat).
+### Connect a GitHub repository
 
-## Model gateway and capability checks
-
-The SDK now supports validated native tool calls, structured output, buffered SSE
-streaming, and a deterministic fake provider. The `ship` command remains read-only
-and text-based; model tool support does not execute tools or authorize repairs.
-
-```sh
-# Inspect declarations without network access or an API key.
-h4 doctor --offline --model YOUR_MODEL --base-url https://YOUR_PROVIDER/v1
-
-# Optional: explicitly authorize up to five small model requests to test declared capabilities.
-h4 doctor --probe --model YOUR_MODEL --base-url https://YOUR_PROVIDER/v1 \
-  --native-tools --streaming --structured-output --usage-reporting
-
-# Credential-free SDK example.
-python examples/provider_tools.py
-```
-
-See [provider contracts and conformance](docs/PROVIDERS.md) for limits, capability
-semantics and SDK behavior. A successful probe tests basic protocol exchanges;
-review quality still requires independent evaluation.
-
-## Durable state SDK
-
-The local state repository provides SQLite task/event/operation transactions,
-request idempotency, run fencing, persisted results and digest-verified private
-artifacts. The GitHub workflow uses this store for durable write intents, receipts and recovery;
-the local `ship` command remains advisory.
-
-```sh
-python examples/durable_task.py
-```
-
-See [persistence and recovery semantics](docs/PERSISTENCE.md). Trusted admission,
-general authorized tool execution and the broader runtime remain future layers.
-
-## What a local recommendation means
-
-`eligible` is advisory: a completed model review, supplied passing CI evidence, no
-blocking findings, and a change within the configured path/size limits. It is not a
-GitHub approval. The model can miss defects; findings have not undergone independent
-verification. `--checks` is operator-supplied evidence, not a GitHub status query.
-
-Observe mode exits 0 when a report was produced, including `needs_human`; failures
-exit 2. Do not use its exit code as a required merge gate. The local `ship` command does not execute code, modify files, push commits, approve
-or merge. The separate GitHub command can write only when explicitly enabled.
-Keep policies in a trusted checkout; never let the reviewed PR choose its own policy.
-
-## GitHub review, repair and approval
-
-`h4 ship-github` connects to a real GitHub repository using an operator-owned policy
-and a private persistent journal. Start with observation, then enable bounded repairs
-and a separate approval account. See the [setup, example and recovery guide](docs/GITHUB_WORKFLOW.md).
+Configure your repository policy, model credential and GitHub token using the
+[setup guide](docs/GITHUB_WORKFLOW.md), then start in observation mode:
 
 ```sh
 h4 ship-github --policy /trusted/project-policy.json --pr 42 \
-  --state-dir "$HOME/.local/state/harness4/project" \
-  --model YOUR_MODEL --base-url https://YOUR_PROVIDER/v1 \
-  --write --approve --check-polls 20
+  --state-dir /trusted/state/github \
+  --model YOUR_MODEL --base-url https://YOUR_PROVIDER/v1
 ```
 
-This requires configured credentials, policy grants, trusted CI and branch protection;
-copying the command alone does not enable writes. The loop supports same-repository
-text PRs and does not merge. Tests cover the HTTP/state lifecycle offline; live
-provider/GitHub qualification and review-quality benchmarks remain pending.
+Add `--write` to allow policy-permitted review posts and repairs. Add `--approve`
+only after configuring the separate approval credential and branch protection.
+To use an approved learned checklist and record feedback episodes, add
+`--learning-dir /trusted/state/learning` after [initializing learning](docs/LEARNING.md).
 
-## Learn from verified feedback, with rollback
+## A learning loop you can audit
 
-The learning loop records revision-bound review evidence, proposes checklist changes
-from verified development feedback, and tests one candidate against fresh target and
-regression cohorts. An explicit operator approval activates the exact evaluated
-version for future GitHub reviews. Rollback restores an earlier policy; retracting
-incorrect feedback invalidates dependent policies.
+A useful lesson needs evidence before it becomes the next review policy.
 
-```sh
-# Complete credential-free lifecycle in a new directory; scripted, no quality claim.
-h4 learning demo --state-dir /tmp/harness4-learning-demo
+```mermaid
+flowchart TD
+    Evidence["Recorded reviews + verified feedback"] --> Dev["Development cases<br/>Propose and compare checklists"]
+    Dev --> Candidate["One selected candidate"]
+    Candidate --> Eval["Fresh target + regression cohorts<br/>Evaluate against current policy"]
+    Eval -->|Insufficient evidence or regression| Stop["Keep current policy"]
+    Eval -->|Release gates pass| Approve["Operator inspects and approves"]
+    Approve --> Active["Activate a versioned checklist<br/>Future GitHub reviews use it"]
+    Active -->|Explicit rollback| Previous["Restore a previously active version"]
+    Active -.->|New reviews and verified feedback| Evidence
+    classDef data fill:#eff6ff,stroke:#2563eb,color:#172554
+    classDef gate fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    classDef hold fill:#fff7ed,stroke:#ea580c,color:#7c2d12
+    class Evidence,Dev,Candidate data
+    class Eval,Approve,Active gate
+    class Stop,Previous hold
 ```
 
-For real use, follow the [learning guide](docs/LEARNING.md) and
-[research synthesis](docs/research/2026-11-25-learning.md). Production evaluation is
-opt-in, budgeted and may abstain. The learner changes only review guidance; GitHub
-permissions and release gates stay operator-owned. No live improvement or superiority
-over another product has been measured yet.
+- **Separate development from release evidence.** The proposer sees development
+  labels; the release cohort is consumed once, including after a crash.
+- **Check improvement and retention.** Paired evaluations compare candidate and
+  current policy. Confidence bounds and regression checks can reject or abstain.
+- **Approve the exact version.** Activation checks the persisted report, policy
+  generation, evidence validity, expiry and a one-use approval.
+- **Reverse a decision.** Roll back an active policy, or retract incorrect feedback
+  to invalidate dependent policies. The original baseline remains available.
 
-## GitHub Actions
+The learnable surface today is the **review checklist**. Model weights, GitHub
+permissions, execution code and evaluation rules stay fixed. Production learning
+requires explicit inference budgets and independent, verified data; the default
+gate requires at least 100 target and 100 regression source groups.
 
-[The observe workflow example](examples/ship-observe.yml) uses read-only permissions,
-installs trusted base-branch code, reads the PR diff, and uploads the report. It needs
-no model secret and therefore reports `needs_human`. Copy it after Harness4 is present
-on your default branch. Do not add secrets to untrusted PR code or switch this example
-to `pull_request_target` with a PR checkout.
+[Run a real learning cycle →](docs/LEARNING.md) ·
+[Research and design decisions →](docs/research/2026-11-25-learning.md)
 
-## Development and roadmap
+## What “4” stands for
+
+Our Harness 4.0 direction is an agent workflow that can **learn from verified
+experience, evaluate a change, and adopt or reverse it under explicit control**.
+The current release implements that direction for PR review guidance. “4” names the
+project's architectural ambition; the package is currently **0.6.0a0, an alpha**.
+
+We are building an open-source alternative for the PR workflow introduced by
+[Claude Ship](https://claude.com/resources/articles/introducing-claude-ship), with
+model choice and an inspectable learning lifecycle as central design goals.
+Harness4 is independent of Anthropic. Feature parity and superior review quality
+remain goals to validate, not benchmark results we claim.
+
+## Built today, measured honestly
+
+**289 automated tests** cover contracts, provider behavior, persistence, GitHub
+orchestration and learning. CI checks Python 3.11–3.13, runs credential-free examples
+and builds the package. A synthetic integration exercises 809 mocked model requests,
+policy activation, GitHub review, rollback and restart deduplication.
+
+| Available in this alpha | Next milestones |
+|---|---|
+| Local review and the opt-in GitHub lifecycle | Live provider and real-PR qualification |
+| Verified-feedback learning, evaluation and rollback | Public, independently labeled quality benchmarks |
+| Private local state and durable write reconciliation | GitHub App installation and webhooks |
+| Same-repository text PRs and classic branch protection | Fork support, isolated CI-failure and conflict repair |
+
+These tests establish implementation behavior. Live quality gains have not yet been
+measured. The coordinator trusts its local OS owner; model/learner separation is not
+an OS sandbox. [Validation evidence](tests/VALIDATION.md) · [Current status](planning/STATUS.md)
+
+## Documentation
+
+| Start here | Go deeper |
+|---|---|
+| [Local review](docs/LOCAL_REVIEW.md) | [Model gateway and conformance](docs/PROVIDERS.md) |
+| [GitHub setup and recovery](docs/GITHUB_WORKFLOW.md) | [Persistence and recovery semantics](docs/PERSISTENCE.md) |
+| [Learning, approval and rollback](docs/LEARNING.md) | [Learning research](docs/research/2026-11-25-learning.md) |
+| [Read-only GitHub Actions example](examples/ship-observe.yml) | [Architecture](docs/DESIGN.md) · [Product acceptance plan](planning/PRODUCT.md) |
+
+## Build with us
+
+Help make evidence-based PR automation useful in real repositories. Especially
+valuable contributions: reproducible provider compatibility reports, independently
+verified review cases, failure/recovery tests, and onboarding improvements.
 
 ```sh
 python -m pip install -e '.[dev]'
 python -m pytest -q
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), [current status](planning/STATUS.md), and
-[release plan](planning/RELEASE.md), and [full product acceptance gates](planning/PRODUCT.md). The original [harness design](docs/DESIGN.md) and
-[dependency backlog](planning/ISSUES.md) remain the longer-term architecture. The general assistant runtime remains unfinished; `h4 learning` implements the
-narrow review-policy lifecycle described above. Contract tests do not
-establish runtime security, durable execution or learning effectiveness.
+[Open an issue](https://github.com/YangZhongqiHealth/harness4/issues) with a reproducible
+problem or proposed contribution. Read [CONTRIBUTING.md](CONTRIBUTING.md) before a PR
+and [SECURITY.md](SECURITY.md) for sensitive reports. Please remove credentials and
+private source from examples. If this direction matters to you, star the repository
+and help us test it against real engineering work.
 
-Next: qualify the GitHub loop with real providers and PRs, improve finding verification,
-add isolated CI-failure repair and GitHub App onboarding, then benchmark quality.
+[MIT licensed](LICENSE). Your infrastructure. Your model endpoint. Your review policy.
