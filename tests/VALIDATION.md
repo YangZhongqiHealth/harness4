@@ -1,149 +1,59 @@
 # Validation
 
-2026-11-24: `python -m pytest -q` — **83 passed** on Python 3.12.
+Current baseline: **289 tests** for 0.6.0a0. CI runs on Python 3.11–3.13 and checks
+installed CLI commands, examples and package builds.
 
-- Original 44 contract/schema/import tests.
-- 39 PR workflow tests: real temporary Git histories, commit pins, protected-path
-  renames, binary/oversize rejection before dispatch, offline/fixture reports,
-  policy eligibility, malformed review JSON, mocked CLI model path, unknown usage,
-  safe provider errors, no retry/redirect, refused/truncated/tool output rejection,
-  malformed/oversize responses, endpoint restrictions and absolute timeout.
-- Built `harness4-0.3.0a0-py3-none-any.whl` with `pip wheel --no-deps
-  --no-build-isolation`; installed into a temporary venv and ran `h4 --help`.
-- Scanned distributable source for common secret formats and local user paths:
-  no matches. This pattern scan is not a guarantee that arbitrary secrets are absent.
+## Reproduce
 
-GitHub CI passed all Python 3.11, 3.12 and 3.13 jobs (tests, installed CLI smoke
-and package build) for implementation commit `6bbb60d`.
-Run: https://github.com/YangZhongqiHealth/harness4/actions/runs/45542186257. No real model endpoint, benchmark quality, automatic
-repair, durable runtime, authorization enforcement or trusted approval gate was
-validated. Reports are observe-only and CI evidence is operator supplied.
+From the repository root, in an activated Python 3.11+ environment:
 
+```sh
+python -m pip install -e '.[dev]'
+python -m pytest -q
+python examples/learning_demo.py
+python examples/provider_tools.py
+python examples/durable_task.py
+```
 
-## Model gateway increment — 0.4.0a0
+Ordinary tests and these examples need no model or GitHub credentials. The learning
+demo uses temporary storage and scripted model replies.
 
-`python -m pytest -q`: **145 passed** locally on Python 3.12 (83 existing tests plus
-62 model conformance/schema tests). New checks cover native tool/result round trips,
-unknown/duplicate/malformed arguments, stable IDs, inline schema restrictions,
-structured output, split UTF-8 and SSE arguments, missing terminators, changed IDs,
-disconnect/cancellation, response bounds, expired deadlines, offline diagnostics,
-fake exhaustion, bounded probe lifecycle, schema compatibility and import direction.
+## Coverage
 
-The offline doctor and fake SDK example both ran successfully. No live provider,
-paid probe, code execution broker or repair workflow was exercised. Previous alpha
-CI results above apply to the earlier implementation, not automatically to this one.
+| Area | What the tests exercise |
+|---|---|
+| Contracts and schemas | Record round trips, unknown fields, version mismatches, canonical encoding and import boundaries |
+| Local review | Real temporary Git histories, commit pins, protected paths, size/binary limits, policy reports and malformed model output |
+| Providers | Tool/structured-output validation, SSE boundaries, UTF-8 splits, refusal/truncation, timeouts, unknown usage, no retry/redirect and capability probes |
+| Persistence | Real SQLite transactions, scoped reads, fences, immutable receipts, pending effects, process crashes, locks and artifact integrity |
+| GitHub workflow (61 cases) | Review → repair → new-head review → CI → approval, restart deduplication, reconciliation, stale evidence, separate principals and protected paths |
+| Learning (43 cases) | Immutable evidence, development-only proposals, fresh release cohorts, confidence gates, approval expiry/replay, activation, rollback and feedback retraction |
 
+A synthetic 202-case learning integration makes 809 HTTP-mocked model requests
+through the real adapter and evaluator. It promotes a candidate, uses it through the
+GitHub CLI, rolls it back and verifies persisted effect deduplication. This exercises
+the production gate's mechanics; constructed data is not an independent real-PR sample.
 
-## Local persistence increment — 0.4.0a0
+## Recorded evidence
 
-Current suite: **185 tests** including SQLite migration/WAL configuration, scoped
-reads, idempotent requests, immutable policy pins, atomic event/state/result commit,
-late-failure rollback, stale fences, immutable receipts, pending-effect reconciliation,
-restart and actual process-crash recovery, second-coordinator refusal, result/artifact
-namespace checks, digest corruption, symlink/FIFO negatives, orphan collection and
-state schema compatibility. `examples/durable_task.py` demonstrates persisted output
-retrieval after restart without model calls. These checks do not implement or certify
-the eventual tool sandbox, application authority resolver or distributed scheduler.
+- Local check on 2026-11-26: `python -m pytest -q` — 289 passed.
+- [CI for d97007b](https://github.com/YangZhongqiHealth/harness4/actions/runs/45883506880):
+  Python 3.11–3.13 tests, installed smoke checks and package builds passed.
+- The 0.6.0a0 wheel was also installed in a separate smoke environment; CLI help,
+  learning demo and installed learning/GitHub integration tests passed outside the
+  source checkout.
 
+The CI link records that revision, not future changes. See the repository's
+[CI runs](https://github.com/YangZhongqiHealth/harness4/actions/workflows/ci.yml)
+for current results.
 
-Model gateway + SQLite implementation commit `e8421fb` passed all GitHub CI jobs
-on Python 3.11, 3.12 and 3.13 (183 tests, offline doctor, both installed SDK examples,
-and package builds):
-https://github.com/YangZhongqiHealth/harness4/actions/runs/45671254294
+## What remains unverified
 
-The follow-up Git subprocess bound adds two tests (185 total locally): output is
-limited during reading and a timed-out child is terminated. It does not change
-model, state or authorization semantics.
+GitHub tests simulate HTTP responses and model replies while using real local state.
+No live model/GitHub repair-and-approval qualification or paid quality benchmark is
+recorded. Test counts do not establish accuracy, provider compatibility, sandbox
+security or improvement over Claude Ship. Local locks do not establish distributed
+coordination. A scripted learning demo verifies the lifecycle, not live learning gains.
 
-
-## GitHub lifecycle increment — 0.5.0a0
-
-The complete suite now has 246 tests; 61 cover GitHub workflow behavior with an
-httpx simulated server and real SQLite journal. Integration coverage includes the
-CLI, two review passes, repair commit/tree/ref APIs, a fresh-head review, required
-App-pinned checks, separate-user approval, and restart without duplicate effects.
-Negative cases cover changed head/base/CI, stale approval dismissal, copied reviews,
-unknown network outcomes, evidence-only reconciliation, repair exhaustion, protected
-and invalid paths, symlinks/submodules, unsupported PR types and transport bounds.
-
-No live model, GitHub mutation, fork deployment, sandbox escape or comparative quality
-benchmark was run. Mocked success validates orchestration, not provider/GitHub account
-configuration or model correctness. Previous SDK/crash tests remain in the full suite.
-
-The 0.5.0a0 wheel built offline and was installed into a separate smoke environment.
-The installed `ship-github --help` and all 61 GitHub integration tests passed from
-outside the source checkout, with repository pytest configuration disabled.
-
-GitHub CI for implementation `546f230` passed on Python 3.11–3.13, including
-all tests, installed CLI/SDK smoke commands and package builds:
-https://github.com/YangZhongqiHealth/harness4/actions/runs/45678176491
-
-
-## Review learning increment — 0.6.0a0
-
-Full suite: **289 passed** locally. Forty-three learning cases cover the complete
-lifecycle, provenance and partition checks, dev-only proposer inputs, malformed
-proposals, retained failures, confidence bounds and low-power abstention, consumed
-cohort reuse, hard process exit/restart, budget/usage/model revision failures,
-transactional promotion failure, one-use/expiry/ABA approval checks, feedback
-retraction with descendant revocation, rollback and demo/production separation.
-
-A 202-case synthetic integration makes 809 HTTP-mocked model calls through the real
-provider adapter and production evaluator, explicitly promotes the winning policy,
-uses it through the GitHub CLI, rolls it back and verifies distinct policy-bound
-review receipts and restart deduplication. No live API mutation or paid inference
-occurs. This is orchestration evidence, not model-quality or statistical sampling
-evidence; the fixtures are deliberately constructed and are not independent real PRs.
-
-The 0.6.0a0 wheel was built offline and installed into a separate environment.
-Installed CLI help and the credential-free learning demo passed outside the source
-checkout. Learning and GitHub integration tests were also run against the installed
-wheel with repository pytest configuration disabled.
-
-
-Public CI for the learning implementation `7dfcdac` passed on Python 3.11–3.13
-(288 tests, installed CLI/demo checks and package builds):
-https://github.com/YangZhongqiHealth/harness4/actions/runs/45736444624
-The subsequent lineage guard adds one regression test (289 locally): a proposer
-cannot turn a previously active baseline into a feedback-dependent candidate.
-
-## README presentation refresh — 2026-11-25
-
-Documentation-only change: product-first README, two native Mermaid diagrams,
-credential-free quickstart with verified JSON excerpt, a local review reference and
-an editorial research note. Checked local documentation links and section anchors;
-ran the installed learning demo and local `ship` quickstart. The displayed demo fields
-match actual output. Runtime behavior and the 289-test baseline are unchanged.
-
-## Usage map and Claude Ship comparison — 2026-11-25
-
-Documentation-only addition: a setup-dependency DAG, goal-to-command table and
-source-linked comparison against Claude Ship's announcement, product page and
-current overview docs. The comparison distinguishes implemented Harness4 controls,
-features not described in the reviewed sources, and acknowledged product gaps.
-Checked command names against the CLI parser, local links and README anchors.
-No runtime changes or comparative accuracy/cost results are implied.
-
-## README editorial review — 2026-11-26
-
-Documentation-only rewrite: shorter product narrative, one accessible SVG overview,
-concrete learning example, and concise comparison. Detailed workflows and comparison
-remain in linked references. Checked relative links, navigation anchors, citation
-references and SVG XML. Reran the installed credential-free demo and confirmed the
-README's selected output fields exactly match. Runtime implementation is unchanged.
-
-## README positioning review — 2026-11-26
-
-Reworked the README around the open-source Claude Ship alternative and verifiable
-review-checklist learning: explicit first-screen positioning, user-benefit table,
-worked feedback example, release gates, adoption modes, balanced comparison and
-implemented/next-milestone matrix. Retained the existing accessible SVG overview
-and repository/CLI name; no product rename or runtime changes.
-
-Rechecked Claude Ship's official overview and product page on 2026-11-26. Checked
-README relative links and section anchors, and matched the selected JSON fields
-against the demo run with the installed 0.6.0a0 smoke environment. The ambient Python
-could not import the uninstalled package when running the demo directly; the installed
-environment succeeded. Full repository suite: `python -m pytest -q` — 289 passed.
-`git diff --check` passed. No live model calls, GitHub PR mutations or measured quality
-gains are claimed by this documentation change.
+See [status](../docs/STATUS.md), [roadmap](../docs/ROADMAP.md) and
+[security boundaries](../SECURITY.md).

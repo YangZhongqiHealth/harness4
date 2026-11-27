@@ -1,6 +1,6 @@
 # Contributing
 
-Start with README.md and planning/STATUS.md. Small contributions with a reproducible
+Start with [README](README.md) and [project status](docs/STATUS.md). Small contributions with a reproducible
 problem and tests are welcome. Discuss large architectural changes in an issue first.
 
 Use Python 3.11+, install `python -m pip install -e '.[dev]'`, and run
@@ -15,3 +15,9 @@ private source diffs, raw provider logs or hidden model reasoning in test fixtur
 Review output is advisory. Changes that enable writes, execution or approvals need
 explicit trusted authorization boundaries and negative tests before being enabled.
 Contributions are distributed under the repository's MIT license.
+
+Keep session handoffs, personal planning and agent scratch notes in the ignored
+`.local-notes/` directory. Public documentation should describe supported behavior,
+reproducible evidence or durable technical rationale. Propose future work through
+[issues](https://github.com/YangZhongqiHealth/harness4/issues) and the
+[roadmap](docs/ROADMAP.md).

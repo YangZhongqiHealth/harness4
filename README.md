@@ -12,7 +12,7 @@ Improve future reviews through evaluated feedback, explicit approval and rollbac
 [![CI](https://github.com/YangZhongqiHealth/harness4/actions/workflows/ci.yml/badge.svg)](https://github.com/YangZhongqiHealth/harness4/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776ab)](pyproject.toml)
-[![Alpha](https://img.shields.io/badge/status-alpha-f59e0b)](planning/STATUS.md)
+[![Alpha](https://img.shields.io/badge/status-alpha-f59e0b)](docs/STATUS.md)
 
 [Try the demo](#quickstart) · [How it works](#how-it-works) · [Use your own repo](#use-it-on-your-repository) · [Compare Claude Ship](#harness4-and-claude-ship) · [Contribute](#build-with-us)
 
@@ -207,8 +207,8 @@ and recovery cases. Current GitHub support covers same-repository text PRs and c
 branch protection. The coordinator does not execute PR code; testing runs in your
 separately configured CI. It trusts its local OS owner and is not an execution sandbox.
 
-[Validation evidence](tests/VALIDATION.md) · [Implementation status](planning/STATUS.md) ·
-[Product roadmap](planning/PRODUCT.md)
+[Validation evidence](tests/VALIDATION.md) · [Implementation status](docs/STATUS.md) ·
+[Product roadmap](docs/ROADMAP.md)
 
 ## Build with us
 

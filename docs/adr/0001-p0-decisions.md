@@ -1,93 +1,67 @@
-# ADR 0001 — P0 decisions and scope freeze
+# ADR 0001 — Core contracts, model gateway and local state
 
-Status: proposed for implementation; supersedes ambiguous P0 examples in the master RFC.
+Accepted implementation baseline for the public alpha. Updated 2026-11-26 to
+separate implemented decisions from the superseded general-runtime proposal.
 
-| Decision | Alternative deferred | Rationale / required test |
-|---|---|---|
-| Single local workspace, one coordinator, SQLite WAL; separate worker processes only when needed | Distributed scheduling / multi-tenant web service | Crash recovery and transaction ownership first; second coordinator refused |
-| Python 3.11+, Pydantic v2, async service ports | Provider-specific SDK objects in core | Provider fixtures enforce normalized schema |
-| Native tools or text-only capability; structured JSON fallback is optional | Pretend every endpoint supports native tools | Unsupported capability is explicit; no silent tool execution |
-| Default assistant uses mounted read-only files plus private artifact writes; no shell | Broad OS access | Symlink and path escape tests; provider credential not visible to tool |
-| Agent policy pinned at task admission; mutable knowledge view is separately versioned | Pin per inference or silently switch on resume | New activation does not change pending task; revocation applies immediately |
-| Plain named instruction-section patches only in M1 | Arbitrary skill code and workflow evolution | Strict patch validation and scope; no learner code execution |
-| Fake normalization demo has deterministic outcomes; live demo needs independent labels and sufficient evidence | Automatic LLM-judge-only release | Fake eligibility cannot activate production policy |
-| Human approval plus CAS activation; no auto promotion in P0 | Unattended evolution | Stale, expired, rejected, incompatible candidates never activate |
-| Offline fixture environment and exact validator for first learning demo | Universal evaluator | Fresh clone per rollout, hidden answers absent from actor context |
-| Record redacted observations and outputs, not hidden reasoning | Raw provider traces as learner input | Secret canary and deletion test |
+## Context
 
-Implementation sequence: M0 provides a useful bounded assistant; M1 completes the verified learning lifecycle. Minimal persistence and permissions are prerequisites, not post-M1 retrofits. M2 expands the same kernel to durable waits/events and uncertain remote effects. The terms P0/P1/P2 denote release capability tiers; M0/M1/M2 are milestones. The package skeleton is not a security boundary; the trusted coordinator must implement all access checks before use with real tools.
+PR coordination needs stable review identity, bounded provider calls and durable
+records of external effects. These foundations must remain independent of a model
+vendor and must not imply authorization merely because a record is schema-valid.
 
-## H4-001 implementation decisions (2026-11-24)
+## Contract decisions
 
-The version-1 contract baseline now includes task outputs, durable display events,
-safe errors and the SPEC-00 service ports. This records implementation decisions;
-it does not assert independent human review or a released public SDK.
+- Python 3.11+, Pydantic v2 records and async Protocols define component boundaries.
+  Core records do not import provider SDKs or storage implementations.
+- Version-1 records reject unknown fields and incompatible schema versions. Tuple
+  collections avoid mutable boundary containers. Checked-in schemas and valid wire
+  examples provide compatibility tests for each concrete record.
+- `TaskResult.policy_hash` identifies the pinned policy. Verification is separate
+  from execution status. Unknown model usage is `None`, not zero.
+- Event timestamps use validated UTC `YYYY-MM-DDTHH:MM:SS.ffffffZ` strings.
+  Canonical JSON is project-specific, not RFC 8785; cross-language hashing would need
+  explicit compatibility and migration work.
+- Scoped reads take workspace identity. Leases include workspace, task, run and
+  fence. Storage implementations enforce scope, expected versions and live fences.
+- General task-service Protocols are not implemented application services. Future
+  admission must reject disagreement between the request key argument and the key
+  in `TaskSpec` before persistence.
 
-- `TaskResult.policy_hash` names the canonical pin (rather than the RFC sketch's
-  ambiguous `policy_version`). Verification uses SPEC-01's four statuses and is
-  independent of execution status. Unknown usage is `None`, never implicit zero.
-- Boundary collections are tuples. Events carry typed display metadata and opaque
-  payload references rather than arbitrary dictionaries. Event timestamps use UTC
-  `YYYY-MM-DDTHH:MM:SS.ffffffZ`, validated as calendar dates; this representation
-  makes timestamp serialization deterministic. Producers must redact display text.
-- State and policy reads require an explicit workspace argument. A lease includes
-  workspace, task, run and fence; commit receives typed intents and events.
-  These signatures require implementations to check ownership, CAS and live fences;
-  the records themselves provide no authorization or transactional enforcement.
-- Service `events` returns an async iterator directly. Submit retains SPEC-00's
-  explicit request key alongside the starter TaskSpec field; admission must reject
-  disagreement before persistence. No admission service is implemented yet.
-- Checked-in JSON schemas and valid wire examples cover every concrete Record.
-  Schema version 1 rejects unknown fields and incompatible versions. Deliberate
-  future contract changes must update this decision record and compatibility fixtures.
+## Model gateway decisions
 
-Provider-specific request/response/stream contracts belong to H4-002. Persistence,
-active release pointers, runtime policy pin enforcement, and credential isolation
-remain later issues; no implementation of those services is claimed here.
+Model records and ports are separate from adapters. Tools and output schemas use
+immutable canonical JSON strings validated as inline JSON Schema 2020-12; schema
+references are deliberately unsupported. Unsupported modalities require new contracts.
+Logical request and attempt IDs remain distinct.
 
-## PR workflow alpha (2026-11-24)
+Tool calls are exposed only after a complete response. Partial streamed text is
+advisory; refused, truncated or malformed responses cannot yield dispatchable calls.
+A tool proposal grants no execution authority. Capabilities distinguish configured
+declarations from explicitly requested bounded probes.
 
-The user selected a usable MIT-licensed open-source PR workflow inspired by Claude
-Ship. The first product slice adds isolated review/report types in `ship.py` and a
-text-only provider adapter without changing the original contracts. Reports carry
-base/head commit IDs and policy/diff hashes. All decisions are observe-only; fixture
-reviews cannot qualify, and CI status is explicitly supplied by the operator.
-No tools execute and no release pointer or GitHub approval is written. H4-002 remains
-partial until its full provider interface and conformance requirements are met.
+Adapters make one attempt and do not retry or redirect. A caller must own retry
+budgets, deadlines and ambiguous-usage accounting. This avoids multiplying retries
+across layers. Offline diagnostics make no model request; paid probes require opt-in.
 
-## H4-002 model gateway baseline (2026-11-24)
+## Persistence decisions
 
-Model records live in `model_contracts.py`, the Protocol in `model_ports.py`, and
-implementations under `adapters/`. Existing task/patch schemas remain unchanged.
-Tools and output schemas use immutable canonical JSON strings, validated as inline
-JSON Schema 2020-12; schema references are deliberately unsupported. Message roles
-are text/system/user/assistant/tool only; unsupported modalities need new contracts.
-Deadlines use integer UTC epoch milliseconds. Logical request and attempt IDs are
-separate. Missing call IDs are derived from logical request ID plus call index.
+SQLite uses WAL/FULL, schema version 1 and a single-coordinator OS lock. A metadata
+row records canonicalizer version 1. Data keys and reads are workspace-scoped.
+Matching request retries retain their original task/policy pin. Restart takeover
+increments local fences and preserves pending intents for reconciliation.
 
-Only a final stream event after a complete finish and `[DONE]` can expose tool calls.
-Partial text is advisory; malformed streams have no final event. Refused/truncated
-outputs contain no dispatchable calls. Tool proposals never confer execution grants.
-Capabilities distinguish configured declarations from explicit bounded probe results.
-Offline doctor performs no network access; paid probes require `--probe`.
+State, steps, events, intents and optional final results share a transaction.
+Receipts are committed separately before reduction and cannot be rewritten.
+Unresolved effects cannot silently become successful terminal tasks. Artifacts are
+content-addressed and fsynced before their references are committed; orphan cleanup
+is explicit and scoped.
 
-Adapters make one attempt and never retry or redirect. Future kernel retries own
-budget, deadline and ambiguous-usage accounting. The existing text facade and ship
-CLI reuse the gateway. Native tools, streaming and probes are implemented and tested
-offline; live endpoint qualification and execution authority are not claimed.
+## Consequences
 
-## H4-003 local state baseline (2026-11-24)
+The design supports inspectable local recovery without requiring a distributed
+scheduler or hosted orchestration. It does not make remote effects atomic or
+exactly-once. Filesystem and symlink checks are defense in depth, not a sandbox
+against processes running as the same OS user.
 
-SQLiteState uses one OS-locked coordinator, SQLite WAL/FULL and schema version 1.
-A metadata row records canonicalizer version 1. All data keys and reads are scoped
-by workspace. Matching request retries retain their original task/policy pin. Run
-fences are local ownership tokens; takeover after restart increments the fence and
-preserves pending operation intents rather than issuing new effects automatically.
-
-State, steps, events, intents and optional final results share one transaction.
-Receipts are committed separately before reduction. Existing receipts cannot be
-rewritten; unresolved operations cannot silently produce a successful terminal task.
-Content-addressed artifacts are fsynced before their reference commit; orphan cleanup
-is explicit and workspace-scoped. POSIX permission/symlink checks are defense in
- depth, not a sandbox against processes with the same OS privileges. Application
-admission/authorization and runtime recovery orchestration remain H4-004 onward.
+See [architecture](../DESIGN.md), [provider contract](../PROVIDERS.md),
+[persistence](../PERSISTENCE.md) and [learning decisions](0002-review-learning.md).

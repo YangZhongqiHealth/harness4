@@ -12,3 +12,8 @@ build/
 report.json
 ship-report.json
 .DS_Store
+
+# Local development notes and agent handoffs
+/HANDOFF.md
+/AGENTS.local.md
+/.local-notes/

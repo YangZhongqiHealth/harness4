@@ -1,8 +1,7 @@
 # ADR 0002: bounded review-policy learning
 
-Accepted for the 0.6.0a0 alpha, 2026-11-25. User-requested priority: implement a
-verifiable, reversible learning loop informed by current research. This is a narrow
-product slice, not completion of the entire H4-011–015 general runtime backlog.
+Accepted for the 0.6.0a0 alpha, 2026-11-25. Scope: verifiable, reversible
+learning of review checklists, integrated with the GitHub PR workflow.
 
 ## Decision
 

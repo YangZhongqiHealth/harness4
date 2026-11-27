@@ -75,7 +75,7 @@ class Repair(Record):
 
 
 class WorkflowJournal:
-    """Reuse H4-003 transactions, artifacts, receipts and single coordinator lock."""
+    """Reuse SQLite transactions, artifacts, receipts and the single-coordinator lock."""
     def __init__(self, state: SQLiteState, policy: GitHubPolicy, number: int):
         self.state, self.policy, self.number = state, policy, number
         self.workspace = policy.repository

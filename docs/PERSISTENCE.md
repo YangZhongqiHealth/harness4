@@ -15,7 +15,8 @@ python examples/durable_task.py
 The example admits a demo task, commits transitions and an artifact-backed result,
 closes the repository and reads the same result after restart. It creates and
 removes its own temporary directory. The ship CLI is not yet a durable orchestrator;
-this repository is the foundation for admission and execution in H4-004 onward.
+this repository provides persistence primitives; general task admission and execution
+services are not implemented.
 
 ## Consistency and recovery
 
