@@ -9,6 +9,11 @@ description = "Open, model-portable PR review, repair and policy workflows"
 readme = "README.md"
 license = {text = "MIT"}
 dependencies = ["pydantic>=2.7,<3", "httpx>=0.27,<1", "jsonschema>=4.23,<5"]
+[project.urls]
+Homepage = "https://github.com/YangZhongqiHealth/harness4"
+Documentation = "https://github.com/YangZhongqiHealth/harness4#quickstart"
+Issues = "https://github.com/YangZhongqiHealth/harness4/issues"
+Source = "https://github.com/YangZhongqiHealth/harness4"
 [project.scripts]
 h4 = "harness4.cli:main"
 [project.optional-dependencies]

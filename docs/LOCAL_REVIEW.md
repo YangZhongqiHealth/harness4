@@ -8,7 +8,9 @@ separate [GitHub command](GITHUB_WORKFLOW.md) handles remote review/repair/appro
 
 Follow the [README quickstart](../README.md#quickstart). Windows users can activate
 the virtual environment with `.venv\Scripts\activate` (or `Activate.ps1` in PowerShell).
+Windows is not currently CI-qualified; WSL follows the Linux setup.
 The package is not published to PyPI; install the repository checkout.
+See [troubleshooting](TROUBLESHOOTING.md) for environment and Git-reference errors.
 
 Against a repository with at least two commits:
 

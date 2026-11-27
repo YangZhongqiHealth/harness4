@@ -13,8 +13,9 @@ Updated 2026-11-26 · **0.6.0a0 public alpha** · MIT · No PyPI release.
 
 ## Validation
 
-The current suite contains **289 automated tests**. CI covers Python 3.11–3.13,
-installed command/example smoke checks and package builds.
+The current suite contains **290 automated tests**. CI covers Python 3.11–3.13,
+installed command/example smoke checks and package builds. CI also runs the local
+review, GitHub and learning suites against the built wheel outside the source tree.
 [Validation coverage and reproduction](../tests/VALIDATION.md).
 
 Tests demonstrate lifecycle behavior with scripted model replies and simulated

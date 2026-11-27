@@ -4,7 +4,7 @@ Start with [README](README.md) and [project status](docs/STATUS.md). Small contr
 problem and tests are welcome. Discuss large architectural changes in an issue first.
 
 Use Python 3.11+, install `python -m pip install -e '.[dev]'`, and run
-`python -m pytest -q`. CI checks Python 3.11–3.13 and builds the package. Add fixtures
+`python -m pytest -q` and `python scripts/check_docs.py`. CI checks Python 3.11–3.13 and builds the package. Add fixtures
 for provider behavior; ordinary tests must not need credentials or paid API calls.
 
 Keep core contracts independent of adapters. Record intentional contract changes in

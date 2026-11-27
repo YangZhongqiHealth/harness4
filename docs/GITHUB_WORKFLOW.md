@@ -179,3 +179,15 @@ with matching repository and model settings first. Use a separate directory from
 `--state-dir`; both hold local locks. Review reports and durable effect identities
 include the checklist hash. This does not expand write grants or CI/approval authority.
 See [learning, evaluation and rollback](LEARNING.md) before enabling it.
+
+## Offline GitHub Actions example
+
+For policy inspection without model credentials, copy
+[ship-observe.yml](../examples/ship-observe.yml) into your repository. It checks out
+a pinned Harness4 revision separately from the trusted target base, installs only
+Harness4, fetches the PR head as Git data and uploads an advisory JSON report. It
+does not install or execute the target project. Review the pinned tool revision
+before updating it. This example performs no AI review, repairs or approval; use
+the operator CLI above for those capabilities.
+
+[Common failures and recovery](TROUBLESHOOTING.md).

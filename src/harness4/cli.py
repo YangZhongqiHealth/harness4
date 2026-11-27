@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 import subprocess
 import sys
@@ -77,6 +78,11 @@ def collect_diff(repo: str, base: str, head: str) -> tuple[str, str, tuple[str, 
 
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(prog='h4', description='Open PR review, repair and policy workflows (alpha).')
+    try:
+        installed_version = version('harness4')
+    except PackageNotFoundError:
+        installed_version = 'source checkout (install the package to report its version)'
+    root.add_argument('--version', action='version', version=f'h4 {installed_version}')
     commands = root.add_subparsers(dest='command', required=True)
     ship = commands.add_parser('ship', help='Review committed changes; emit an advisory JSON report.')
     ship.add_argument('--repo', default='.')

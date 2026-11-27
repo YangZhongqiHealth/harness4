@@ -241,3 +241,14 @@ def test_git_timeout_kills_child(monkeypatch):
         git('.','status',timeout=0.05)
     assert time.monotonic()-start<5
     assert children[0].poll() is not None
+
+
+def test_version_exits_without_repository_or_credentials(capsys, monkeypatch):
+    monkeypatch.setenv('H4_MODEL_KEY', 'must-not-be-disclosed')
+    with pytest.raises(SystemExit) as result:
+        main(['--version'])
+    assert result.value.code == 0
+    output = capsys.readouterr()
+    assert output.out.startswith('h4 ')
+    assert 'must-not-be-disclosed' not in output.out
+    assert not output.err

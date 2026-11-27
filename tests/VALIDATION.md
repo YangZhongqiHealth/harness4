@@ -1,7 +1,10 @@
 # Validation
 
-Current baseline: **289 tests** for 0.6.0a0. CI runs on Python 3.11–3.13 and checks
-installed CLI commands, examples and package builds.
+Current baseline: **290 tests** for 0.6.0a0. CI runs on Python 3.11–3.13 and checks
+installed CLI commands, examples and package builds. Local review, GitHub workflow
+and learning tests also run against the installed wheel outside the source checkout,
+with repository pytest path configuration disabled. Documentation links are checked
+with `python scripts/check_docs.py`.
 
 ## Reproduce
 
@@ -36,12 +39,17 @@ the production gate's mechanics; constructed data is not an independent real-PR 
 
 ## Recorded evidence
 
-- Local check on 2026-11-26: `python -m pytest -q` — 289 passed.
+- Local check on 2026-11-26: `python -m pytest -q` — 290 passed.
 - [CI for d97007b](https://github.com/YangZhongqiHealth/harness4/actions/runs/45883506880):
   Python 3.11–3.13 tests, installed smoke checks and package builds passed.
-- The 0.6.0a0 wheel was also installed in a separate smoke environment; CLI help,
-  learning demo and installed learning/GitHub integration tests passed outside the
-  source checkout.
+- A freshly created virtual environment installed the 0.6.0a0 wheel with declared
+  dependencies on 2026-11-26. Version reporting and all three bundled Python examples
+  passed. The 146 local-review, GitHub-workflow and learning tests passed against
+  the installed package outside the checkout, with pytest configuration disabled.
+- The offline Actions example was smoke-tested locally against a temporary consumer
+  repository with no Python packaging: fetch a PR ref, compute its merge base and
+  produce an advisory report without installing the consumer or changing its checkout.
+  This is not a live Actions/GitHub qualification run.
 
 The CI link records that revision, not future changes. See the repository's
 [CI runs](https://github.com/YangZhongqiHealth/harness4/actions/workflows/ci.yml)

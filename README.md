@@ -59,15 +59,24 @@ Learning runs when you request it. [Detailed workflow diagrams →](docs/WORKFLO
 
 ## Quickstart
 
+| Start here | What you need | What you get |
+|---|---|---|
+| **Offline demo** below | Python and Git | Inspect evaluation, activation and rollback without credentials. |
+| [Local review](#review-a-local-change) | A committed change; model credentials for AI review | An advisory JSON report, with no repository writes. |
+| [GitHub PR](#review-a-github-pr-then-opt-into-writes) | Operator policy, GitHub user token and model endpoint | Start read-only; opt into bounded writes later. |
+
+
 **Try the learning loop without API keys, GitHub credentials or remote writes.**
 Requires Python 3.11+ and Git; commands below use a macOS/Linux shell.
+Linux is covered by CI; Windows setup is not yet CI-qualified.
 
 ```sh
 git clone https://github.com/YangZhongqiHealth/harness4.git
 cd harness4
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install .
+h4 --version
 python examples/learning_demo.py
 ```
 
@@ -90,7 +99,7 @@ storage, evaluation gates, approval, activation and rollback use the real lifecy
 The demo verifies the mechanism; it does not measure live model improvement.
 
 Install from this checkout; there is no PyPI release yet.
-[Windows and local setup →](docs/LOCAL_REVIEW.md)
+[Installation help and troubleshooting →](docs/TROUBLESHOOTING.md)
 
 ## What self-improvement looks like
 
@@ -193,7 +202,7 @@ Anthropic's internal systems. Harness4 is independent and unaffiliated with Anth
 
 ## Project status
 
-**0.6.0a0 · Alpha · 289 automated tests · CI on Python 3.11–3.13**
+**0.6.0a0 · Alpha · 290 automated tests · CI on Python 3.11–3.13**
 
 | Available now | Next milestones |
 |---|---|
@@ -209,6 +218,19 @@ separately configured CI. It trusts its local OS owner and is not an execution s
 
 [Validation evidence](tests/VALIDATION.md) · [Implementation status](docs/STATUS.md) ·
 [Product roadmap](docs/ROADMAP.md)
+
+## Before enabling writes
+
+Use a trusted install and operator-owned policy outside the PR checkout. Keep the
+state directory between runs so interrupted writes can be reconciled. The example
+policy starts with repairs and approvals disabled and protects tests and workflows.
+Start on a small, same-repository PR in observation mode.
+
+The [GitHub setup guide](docs/GITHUB_WORKFLOW.md) covers token permissions, check
+App IDs and branch protection. The [troubleshooting guide](docs/TROUBLESHOOTING.md)
+explains blocked runs, missing checks and recovery. For credential-free CI policy
+inspection, copy the [Actions example](examples/ship-observe.yml); it does not run AI
+review or execute the target project.
 
 ## Build with us
 
@@ -229,6 +251,6 @@ Keep ordinary tests credential-free and shared examples free of secrets and priv
 
 ## Documentation
 
-- **Use:** [Local review](docs/LOCAL_REVIEW.md) · [GitHub setup and recovery](docs/GITHUB_WORKFLOW.md) · [Learning](docs/LEARNING.md)
+- **Use:** [Troubleshooting](docs/TROUBLESHOOTING.md) · [Local review](docs/LOCAL_REVIEW.md) · [GitHub setup and recovery](docs/GITHUB_WORKFLOW.md) · [Learning](docs/LEARNING.md)
 - **Understand:** [Workflow diagrams](docs/WORKFLOWS.md) · [Architecture](docs/DESIGN.md) · [Learning research](docs/research/2026-11-25-learning.md)
 - **Integrate:** [Provider contract](docs/PROVIDERS.md) · [Persistence](docs/PERSISTENCE.md) · [Read-only Actions example](examples/ship-observe.yml)
